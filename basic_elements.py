@@ -27,20 +27,28 @@ class Point:
             self.cod = kwargs["cod"]
         else:
             self.cod = "Por defecto"
+
     #Cálculo del módulo (distancia) entre dos vectores de dos puntos.
     def distance(self, x=0, y=0, z=0):
         """Devuelve el módulo del vector o la distancia entre dos puntos en
         caso de que se añadan coordenadas a los parámetros del método"""
         return np.linalg.norm(self.coord-np.array([x,y,z]))
+
     #Cálculo de azimut de un punto o entre dos puntos.
     def azimut(self, x=0, y=0, z=0):
         azim = (math.atan2(x-self.coord[0],y-self.coord[1]))*(200/math.pi)
+        # Si self equivale al origen, el azimut es "0" o Nulo
+        if tuple(self.coord) != (0,0,0):
+            azim = 0
+        # En caso de que no se pasen coordenadas, se calcula el azimut de self.
+        elif (x,y,z) == (0,0,0):
+            azim = azim + 200
         return azim
-        #Hay que revisarlo!!!!!
 
 """Pruebas"""
+print("-------------------------")
 print("PRUEBAS DE FUNCIONAMIENTO")
-p1 = Point(2, 2, 0)
+p1 = Point(-1, 1, 0)
 p2 = Point(1, 1, 0)
 print("Coordenadas de Punto 1: %s" % (p1.coord))
 print(p1.distance(x=1,y=1,z=0))
