@@ -30,6 +30,16 @@ class Point:
         #Mensaje de creación de cada instancia.
         print("Creación de punto con coordenadas: %s" % (self.coord))
 
+    #Setter para cambiar valores de coordenadas.
+    def set_coord(self, coord, value):
+        if coord == "x":
+            self.coord[0] = value
+        elif coord == "y":
+            self.coord[1] = value
+        elif coord == "z":
+            self.coord[2] = value
+        print("Las coordenadas del punto han cambiado: %s" % (self.coord))
+
     #Cálculo del módulo (distancia) entre dos vectores de dos puntos.
     #Las coordenadas deben ser de tipo np.array.
     def distance(self, coord):
@@ -39,22 +49,47 @@ class Point:
             coord = np.array(coord)
         return np.linalg.norm(self.coord-coord)
 
-    #Cálculo de azimut de un punto o entre dos puntos.
-    #Las coordenadas deben ser de tipo np.array.
-    def azimut(self, coord):
-        #Convierte las coordenadas en una matriz.
-        if type(coord) != np.ndarray:
-            coord = np.array(coord)
-        azim = (math.atan2(coord[0]-self.coord[0],
-                coord[0]-self.coord[1]))*(200/math.pi)
-        # Si self equivale al origen, el azimut es "0" o Nulo
-        if tuple(self.coord) == (0,0,0):
-            azim = 0
-        # En caso de que no se pasen coordenadas, se calcula el azimut de self.
-        elif tuple(coord) == (0,0,0):
-            azim = azim + 200
-        #Devuelve el resto del azimut entre 300.
-        return azim % 400
+#Clase Ángulo.
+class Angle:
+    def __init__(self, angle, ang_mes = "grad"):
+        if ang_mes == "grad":
+            pass
+        elif ang_mes == "deg":
+            angle = angle*(200/180)
+        elif ang_mes == "rad":
+            angle = angle*(200/math.pi)
+        self.ang_mes = "grad"
+        self.angle = angle % 400
+
+#Clase Azimut, hereda de clase Ángulo.
+class Azimut(Angle):
+    """Clase Azimut que toma como parámetros dos puntos:
+    1 - Primer punto (o inicial)
+    2 - Segundo punto (o final)"""
+    def __init__(self, st_point, nd_point):
+        #Puntos de clase Point.
+        self.st_point = st_point
+        self.nd_point = nd_point
+        dif_coord = self.nd_point.coord - self.st_point.coord
+        #El ángulo es el azimut.
+        self.angle = (math.atan2(
+            dif_coord[0],dif_coord[1]))*(200/math.pi) % 400
+
+#Clase Ángulo Cenital.
+class Zenith(Angle):
+    """Clase Ángulo cenital"""
+    def __init__(self, angle):
+        self.angle = angle
+
+#Clase Nivelación.
+class Levelling:
+    def __init__(self):
+        pass
+
+#Clase Poligonal.
+class Polygonal:
+    def __init__(self):
+        pass
 
 """Pruebas"""
 print("-------------------------")
@@ -63,10 +98,16 @@ print("-------------------------")
 p1 = Point(-1, 1, 0, cod = "Arbol")
 p2 = Point(1, 1, 0)
 p3 = Point(2, 2, 2)
-print("Dinstancia entre dos puntos con el método del punto: %s" %
+"""print("Dinstancia entre dos puntos con el método del punto: %s" %
     (p1.distance(p2.coord)))
 print("Dinstancia entre dos puntos con np.linalg: %s" %
     (np.linalg.norm(p1.coord-p2.coord)))
-print("azimut del punto 1: %s" % (p1.azimut([0,0,0])))
+print("azimut del punto 1: %s" % (p1.azimut([-2,2,0])))
 print(p1.cod)
-print(p2.coord[1])
+print(p2.coord[1])"""
+azim_p1_p2 = Azimut(p1,p2)
+print(azim_p1_p2.angle)
+ang_1 = Angle(540, ang_mes="deg")
+print(ang_1.angle)
+print(ang_1.ang_mes)
+p1.set_coord("x", 100)
