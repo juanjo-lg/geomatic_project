@@ -62,6 +62,7 @@ print("PRUEBAS DE FUNCIONAMIENTO")
 print("-------------------------")
 p1 = Point(-1, 1, 0, cod = "Arbol")
 p2 = Point(1, 1, 0)
+p3 = Point(2, 2, 2)
 print("Dinstancia entre dos puntos con el método del punto: %s" %
     (p1.distance(p2.coord)))
 print("Dinstancia entre dos puntos con np.linalg: %s" %
