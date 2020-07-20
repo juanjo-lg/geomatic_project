@@ -7,6 +7,7 @@ Created on Wen Jul 15 12:51:00 2020
 
 """Elementos Básicos para aplicación de Topografía."""
 
+import time
 import math
 import numpy as np
 
@@ -30,8 +31,22 @@ class Point:
         #Mensaje de creación de cada instancia.
         print("Creación de punto con coordenadas: %s" % (self.coord))
 
+    #Getter para obtener coordenadas.
+    def get_coord(self, coord):
+        coord = coord.lower()
+        index = ""
+        if coord == "x":
+            index = 0
+        elif coord == "y":
+            index = 1
+        elif coord == "z":
+            index = 2
+        print("La coordenada '%s' es: %s" % (coord,self.coord[index]))
+        return self.coord[index]
+
     #Setter para cambiar valores de coordenadas.
     def set_coord(self, coord, value):
+        coord = coord.lower()
         if coord == "x":
             self.coord[0] = value
         elif coord == "y":
@@ -95,6 +110,7 @@ class Polygonal:
 print("-------------------------")
 print("PRUEBAS DE FUNCIONAMIENTO")
 print("-------------------------")
+inicio = time.time()
 p1 = Point(-1, 1, 0, cod = "Arbol")
 p2 = Point(1, 1, 0)
 p3 = Point(2, 2, 2)
@@ -111,3 +127,8 @@ ang_1 = Angle(540, ang_mes="deg")
 print(ang_1.angle)
 print(ang_1.ang_mes)
 p1.set_coord("x", 100)
+p1.get_coord("y")
+print(a)
+fin = time.time()
+dif_time = fin - inicio
+print(dif_time)
