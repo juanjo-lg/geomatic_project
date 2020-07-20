@@ -76,6 +76,15 @@ class Angle:
         self.ang_mes = "grad"
         self.angle = angle % 400
 
+#Clase Distancia.
+class Distance:
+    def __init__(self, coord_1, coord_2):
+        if type(coord_1) != np.ndarray:
+            coord_1 = np.array(coord_1)
+        if type(coord_2) != np.ndarray:
+            coord_2 = np.array(coord_2)
+        self.dist = np.linalg.norm(coord_1-coord_2)
+
 #Clase Azimut, hereda de clase Ángulo.
 class Azimut(Angle):
     """Clase Azimut que toma como parámetros dos puntos:
@@ -87,14 +96,19 @@ class Azimut(Angle):
         self.nd_point = nd_point
         dif_coord = self.nd_point.coord - self.st_point.coord
         #El ángulo es el azimut.
-        self.angle = (math.atan2(
+        self.azim = (math.atan2(
             dif_coord[0],dif_coord[1]))*(200/math.pi) % 400
 
 #Clase Ángulo Cenital.
 class Zenith(Angle):
     """Clase Ángulo cenital"""
     def __init__(self, angle):
-        self.angle = angle
+        self.zenith = angle
+
+#Clase Base.
+class Base(Point, Azimut, Zenith):
+    def __init__(self, coord, azim):
+        pass
 
 #Clase Nivelación.
 class Levelling:
