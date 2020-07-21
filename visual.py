@@ -5,6 +5,8 @@ Created on Mon Jul 20 17:13:00 2020
 @author: Juanjo_LG
 """
 
+"""GUI para la aplicación de topografía para el TFG."""
+
 import sys
 import tkinter as tk
 
