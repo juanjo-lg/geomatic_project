@@ -66,7 +66,7 @@ class Point:
 
 #Clase Ángulo.
 class Angle:
-    def __init__(self, angle, ang_mes = "grad"):
+    def __init__(self, angle = '', ang_mes = "grad"):
         if ang_mes == "grad":
             pass
         elif ang_mes == "deg":
@@ -102,7 +102,8 @@ class Azimut(Angle):
 #Clase Ángulo Cenital.
 class Zenith(Angle):
     """Clase Ángulo cenital"""
-    def __init__(self, angle):
+    def __init__(self, angle = ''):
+        Angle.__init__(self, angle = '', ang_mes = "grad")
         self.zenith = angle
 
 #Clase Base.
