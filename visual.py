@@ -25,9 +25,9 @@ root.geometry("%dx%d+%d-%d" % (screen_size[0], screen_size[1]-100,-10,40))
 def open_file(event = None):
     try:
         file_name = filedialog.askopenfilename()
-        archivo = table.insert("",1,text="VIAL_CAJEO.PUN")
+        archivo = table.insert("",1,text=file_name)
         print(file_name)
-        with open("VIAL_CAJEO.PUN") as file:
+        with open(file_name) as file:
             separator = "\t"
             #Contador de número de fila para insertarlo.
             count = 1
