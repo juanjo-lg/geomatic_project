@@ -28,8 +28,6 @@ root.configure(background="gray60")
 file_opened = []
 
 # Función para abrir un archivo desde el explorador.
-
-
 def open_file(event=None):
     try:
         file_name = filedialog.askopenfilename(defaultextension="*.*", filetypes=[("All Files", "*.*"),
@@ -45,6 +43,9 @@ def open_file(event=None):
                 separator = "\t"
                 # Contador de número de fila para insertarlo.
                 count = 1
+                # Variables para el cálculo de la media de coordenadas.
+                x_sum = 0
+                y_sum = 0
                 file_opened.append(file_name)
                 for line in file:
                     # Se podría instanciar un punto por cada línea que se lee del archivo.
@@ -69,6 +70,13 @@ def open_file(event=None):
                         table.insert(file_no_path, count, values=(
                             line[0], line[1], line[2], line[3], line[4]))
                     count += 1
+                    x_sum += float(line[1])
+                    y_sum += float(line[2])
+                #Posible fallo en count, podría ser count-1
+                #No funciona bien, hay que arreglarlo para añadir la media al final de la lista
+                file_opened.append((x_sum/count, y_sum/count))
+                print(file_opened)
+                    
         else:
             messagebox.showerror(title="Error",
                                  message="El archivo que intenta abrir ya se encuentra abierto.")
@@ -77,8 +85,6 @@ def open_file(event=None):
                              message="Ha habido un error al abrir el archivo.")
 
 # Función para definir el comportamiento del cierre.
-
-
 def exit(event=None):
     request = messagebox.askyesno(title="¡Aviso!",
                                   message="¿Está seguro de que quiere salir del programa?")
@@ -86,8 +92,6 @@ def exit(event=None):
         sys.exit()
 
 # Función para mostrar el mensaje sobre la información.
-
-
 def about_click():
     about = ("Author: Juanjo Lorenzo\n"
              "e-mail: juanjolorenzogutierrez@gmail.com\n"
@@ -95,6 +99,30 @@ def about_click():
              "Version: 0.00")
     messagebox.showinfo(title="Acerca de:", message=about)
 
+# Función para hacer zoom a algo en el canvas.
+def zoom_to(x, y, event=None):
+    # Centra el canvas en el centro de las coordenadas.
+    canv.configure(scrollregion=(x-screen_size[0]/4, y-screen_size[1]/4,
+        x+screen_size[0]/4, y+screen_size[1]/4))
+
+# Función para mostrar los valores de los puntos de la tabla
+def show_item(event=None):
+    table_item = table.focus()
+    item_data = table.item(table_item, option="values")
+    try:
+        canv.create_rectangle(float(item_data[1])-2, float(item_data[2])-2,
+        float(item_data[1])+2,float(item_data[2])+2, fill="white", tags="point")
+        # Hace zoom a un punto y lo pone en el centro del canvas.
+        zoom_to(float(item_data[1]), float(item_data[2]))
+    except:
+        print("Hay un error")
+
+# Función para detectar las coordenadas del ratón en el canvas.
+def scroll_start(event):
+    canv.scan_mark(event.x, event.y)
+
+def scroll_move(event):
+    canv.scan_dragto(event.x, event.y)
 
 # Construcción de menu principal.
 menubar = tk.Menu(root)
@@ -123,16 +151,16 @@ menubar.add_cascade(label="Info", menu=menu_about)
 
 # Frame para herramientas.
 fr_tool = tk.Frame(root)
-fr_tool.grid(row=0, column=0, padx=2, pady=0)
+fr_tool.grid(row=0, column=0, padx=2, pady=0, sticky=tk.W)
 
 # Frame para el Treeview.
 fr_table = tk.Frame(root)
 fr_table.configure(background='gray38')
-fr_table.grid(row=1, column=0, padx=10, pady=0, sticky=tk.W)
+fr_table.grid(row=1, column=0, padx=0, pady=0, sticky=tk.W)
 
 # Frame para canvas.
 fr_canvas = tk.Frame(root)
-fr_canvas.grid(row=1, column=1, sticky="nsew")
+fr_canvas.grid(row=1, column=1, sticky="nsew", padx=2)
 
 # Botones para herramientas.
 btn_open = tk.Button(fr_tool, text="Abrir", command=open_file,
@@ -150,6 +178,13 @@ btn_format = tk.Button(fr_tool, text="Formato", command='',
     bg='gray38', fg="gray75")
 btn_format.pack(side="left", ipadx=5, ipady=5)
 
+# Centra el canvas en el centro de la media de las coordenadas.
+btn_zoom = tk.Button(fr_tool, text="Zoom",
+    command=lambda: zoom_to(file_opened[1][0], file_opened[1][1]),
+    height=2, width=5, relief=tk.SOLID, borderwidth=1,
+    bg='gray38', fg="gray75")
+btn_zoom.pack(side="left", ipadx=5, ipady=5)
+
 btn_dist = tk.Button(fr_tool, text="Distancia", command='',
     height=2, width=5, relief=tk.SOLID, borderwidth=1,
     bg='gray38', fg="gray75")
@@ -160,6 +195,11 @@ btn_azim = tk.Button(fr_tool, text="Azim", command='',
     bg='gray38', fg="gray75")
 btn_azim.pack(side="left", ipadx=5, ipady=5)
 
+btn_show = tk.Button(fr_tool, text="Show", command=show_item,
+    height=2, width=5, relief=tk.SOLID, borderwidth=1,
+    bg='gray38', fg="gray75")
+btn_show.pack(side="left", ipadx=5, ipady=5)
+
 
 # Encabezado para fr_table.
 lbl_table = tk.Label(fr_table, text="Puntos")
@@ -169,11 +209,27 @@ lbl_table.pack()
 table = ttk.Treeview(fr_table)
 table.pack(side="left")
 
-# Scrollbar para Treeview. Funciona solamente enlazándola al Frame.
-scroll_bar = ttk.Scrollbar(fr_table, orient="vertical", command=table.yview)
-scroll_bar.pack(side="right", fill="y")
+# Canvas para mostrar los puntos.
+canv = tk.Canvas(fr_canvas, relief=tk.SOLID, borderwidth=1,
+    width=screen_size[0]/2, height=screen_size[1]/2)
+canv.configure(background='gray38')
+canv.pack(fill=tk.BOTH)
 
-table.configure(yscrollcommand=scroll_bar.set)
+# Scrollbar para Treeview. Funciona solamente enlazándola al Frame.
+scroll_tree = ttk.Scrollbar(fr_table, orient="vertical", command=table.yview)
+scroll_tree.pack(side="right", fill="y")
+
+# Scrollbar para Canvas.
+scroll_canv_x = tk.Scrollbar(fr_canvas, orient="horizontal",command=canv.xview)
+scroll_canv_y = tk.Scrollbar(fr_canvas, orient="vertical",command=canv.yview)
+scroll_canv_y.pack(side="right", fill="y")
+scroll_canv_x.pack(side="bottom", fill="x")
+
+
+# Configurar las scroolbar en cada widget.
+table.configure(yscrollcommand=scroll_tree.set)
+canv.configure(xscrollcommand=scroll_canv_x.set,
+    yscrollcommand=scroll_canv_y.set)
 
 table["columns"] = ("1", "2", "3", "4", "5")
 table.column("#0", width=150, minwidth=100, stretch=tk.NO)
@@ -189,14 +245,11 @@ table.heading("3", text="Y")
 table.heading("4", text="Z")
 table.heading("5", text="Código")
 
-# Canvas para mostrar los puntos.
-canv = tk.Canvas(fr_canvas, relief=tk.SOLID, borderwidth=1,
-    width=screen_size[0]/2, height=screen_size[1]/2)
-canv.configure(background='gray38')
-canv.pack(fill=tk.BOTH)
-
 # Se muestra el menu.
 root.config(menu=menubar)
+
+canv.bind("<ButtonPress-1>", scroll_start)
+canv.bind("<B1-Motion>", scroll_move)
 
 # Enlace de los eventos con los atajos.
 root.bind('<Control-o>', open_file)
