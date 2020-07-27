@@ -76,7 +76,7 @@ def open_file(event=None):
                 #No funciona bien, hay que arreglarlo para añadir la media al final de la lista
                 file_opened.append((x_sum/count, y_sum/count))
                 print(file_opened)
-                    
+
         else:
             messagebox.showerror(title="Error",
                                  message="El archivo que intenta abrir ya se encuentra abierto.")
@@ -122,7 +122,7 @@ def scroll_start(event):
     canv.scan_mark(event.x, event.y)
 
 def scroll_move(event):
-    canv.scan_dragto(event.x, event.y)
+    canv.scan_dragto(event.x, event.y, gain=1)
 
 # Construcción de menu principal.
 menubar = tk.Menu(root)
@@ -159,8 +159,12 @@ fr_table.configure(background='gray38')
 fr_table.grid(row=1, column=0, padx=0, pady=0, sticky=tk.W)
 
 # Frame para canvas.
-fr_canvas = tk.Frame(root)
-fr_canvas.grid(row=1, column=1, sticky="nsew", padx=2)
+fr_canvas = tk.Frame(root,width=screen_size[0]/2, height=screen_size[1]/2)
+fr_canvas.grid(row=1, column=1, sticky="nsew", padx=2,
+    columnspan=10, rowspan=10)
+
+fr_info = tk.Frame(root)
+fr_info.grid(row=1, column=10)
 
 # Botones para herramientas.
 btn_open = tk.Button(fr_tool, text="Abrir", command=open_file,
@@ -213,18 +217,21 @@ table.pack(side="left")
 canv = tk.Canvas(fr_canvas, relief=tk.SOLID, borderwidth=1,
     width=screen_size[0]/2, height=screen_size[1]/2)
 canv.configure(background='gray38')
-canv.pack(fill=tk.BOTH)
+canv.pack(fill=tk.BOTH, expand=1)
+
+# Rellenar columnas.
+for i in range(8):
+    tk.Label(root, width=10).grid(row=0, column=i+2)
 
 # Scrollbar para Treeview. Funciona solamente enlazándola al Frame.
 scroll_tree = ttk.Scrollbar(fr_table, orient="vertical", command=table.yview)
 scroll_tree.pack(side="right", fill="y")
 
 # Scrollbar para Canvas.
-scroll_canv_x = tk.Scrollbar(fr_canvas, orient="horizontal",command=canv.xview)
-scroll_canv_y = tk.Scrollbar(fr_canvas, orient="vertical",command=canv.yview)
+scroll_canv_x = tk.Scrollbar(canv, orient="horizontal",command=canv.xview)
+scroll_canv_y = tk.Scrollbar(canv, orient="vertical",command=canv.yview)
 scroll_canv_y.pack(side="right", fill="y")
 scroll_canv_x.pack(side="bottom", fill="x")
-
 
 # Configurar las scroolbar en cada widget.
 table.configure(yscrollcommand=scroll_tree.set)
@@ -248,8 +255,8 @@ table.heading("5", text="Código")
 # Se muestra el menu.
 root.config(menu=menubar)
 
-canv.bind("<ButtonPress-1>", scroll_start)
-canv.bind("<B1-Motion>", scroll_move)
+canv.bind("<ButtonPress-2>", scroll_start)
+canv.bind("<B2-Motion>", scroll_move)
 
 # Enlace de los eventos con los atajos.
 root.bind('<Control-o>', open_file)
