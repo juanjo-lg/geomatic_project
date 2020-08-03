@@ -59,15 +59,14 @@ def open_file(event=None):
                 for line in file:
                     # Se podría instanciar un punto por cada línea que se lee del archivo.
                     # Se crea una lista formada por las palabra de cada línea.
-                    print("sin separador", line.replace("  ",""))
+                    # Así lee los puntos separados tanto por espacios como por tabulaciones.
+                    line = "\t".join(line.split())
                     line = line.split(separator)
-                    print("prueba",line[0:10])
                     # Cambio de formato de los números.
                     line[0] = int(line[0])
                     line[1] = round(float(line[1]), 3)
                     line[2] = round(float(line[2]), 3)
                     line[3] = round(float(line[3]), 3)
-                    print(line)
                     # Supresión de salto de línea en el código.
                     try:
                         line[4] = line[4].rstrip()
@@ -118,7 +117,8 @@ def select_item(event=None):
 
 def draw_canvas(event=None):
     coord = select_item()[1:3]
-    add_point.plot(coord[0],coord[1],'bo')
+    ax.plot(coord[0],coord[1],'bo')
+    #ax.scatter(coord[0],coord[1],s=10)
     canvas.draw()
 
 
@@ -152,9 +152,9 @@ fr_tool = tk.Frame(root)
 #fr_tool.grid(row=0, column=0, padx=2, pady=0, sticky=tk.W)
 fr_tool.pack(side=tk.TOP)
 
-# Frame para notebook.
-fr_note = tk.Frame(root)
-fr_note.pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
+# Frame prueba para canvas matplotlib.
+fr_canvas = tk.Frame(root)
+fr_canvas.pack(side=tk.RIGHT, fill=tk.BOTH, expand=1)
 
 # Frame para el Treeview.
 fr_table = tk.Frame(root)
@@ -162,9 +162,9 @@ fr_table.configure(background='gray38')
 #fr_table.grid(row=1, column=0, padx=0, pady=0, sticky=tk.W)
 fr_table.pack(side=tk.TOP, fill=tk.Y)
 
-# Frame prueba para canvas matplotlib.
-fr_canvas = tk.Frame(root)
-fr_canvas.pack()
+# Frame para notebook.
+fr_note = tk.Frame(root)
+fr_note.pack()
 
 # Botones para herramientas.
 btn_open = tk.Button(fr_tool, text="Abrir", command=open_file,
@@ -193,8 +193,9 @@ btn_azim = tk.Button(fr_tool, text="Azim", command='',
 btn_azim.pack(side="left", ipadx=5, ipady=5)
 
 # Notebook con distintas pestañas.
-note = ttk.Notebook(
-        fr_note, width=int(screen_size[0]/2), height=int(screen_size[1]/2))
+note = ttk.Notebook(fr_note)
+"""note = ttk.Notebook(
+        fr_note, width=int(screen_size[0]/2), height=int(screen_size[1]/2))"""
 fr_puntos = tk.Frame(note)
 
 note.add(fr_puntos, text="Hola")
@@ -233,12 +234,13 @@ table.heading("5", text="Código")
 fig = Figure(figsize=(5,5), dpi=100)
 #t = np.arange(0, 3, .01)
 #fig.add_subplot(111).plot(t, 2*np.sin(2*np.pi*t))
-add_point = fig.add_subplot(111)
+ax = fig.add_subplot(1,1,1)
+ax.set_autoscale_on(True)
 #fig.add_subplot(111).plot(20,33,'bo')
 
 canvas = FigureCanvasTkAgg(fig, master=fr_canvas)
 canvas.draw()
-canvas.get_tk_widget().pack(side=tk.LEFT)
+canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH, expand = 1)
 
 # Se muestra el menu.
 root.config(menu=menubar)
