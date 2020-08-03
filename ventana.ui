@@ -23,6 +23,15 @@
        </color>
       </brush>
      </colorrole>
+     <colorrole role="Light">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>153</red>
+        <green>153</green>
+        <blue>153</blue>
+       </color>
+      </brush>
+     </colorrole>
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
@@ -33,6 +42,24 @@
       </brush>
      </colorrole>
      <colorrole role="Window">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>153</red>
+        <green>153</green>
+        <blue>153</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="AlternateBase">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>153</red>
+        <green>153</green>
+        <blue>153</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="NoRole">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
         <red>153</red>
@@ -52,6 +79,15 @@
        </color>
       </brush>
      </colorrole>
+     <colorrole role="Light">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>153</red>
+        <green>153</green>
+        <blue>153</blue>
+       </color>
+      </brush>
+     </colorrole>
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
@@ -62,6 +98,24 @@
       </brush>
      </colorrole>
      <colorrole role="Window">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>153</red>
+        <green>153</green>
+        <blue>153</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="AlternateBase">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>153</red>
+        <green>153</green>
+        <blue>153</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="NoRole">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
         <red>153</red>
@@ -81,6 +135,15 @@
        </color>
       </brush>
      </colorrole>
+     <colorrole role="Light">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>153</red>
+        <green>153</green>
+        <blue>153</blue>
+       </color>
+      </brush>
+     </colorrole>
      <colorrole role="Base">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
@@ -91,6 +154,24 @@
       </brush>
      </colorrole>
      <colorrole role="Window">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>153</red>
+        <green>153</green>
+        <blue>153</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="AlternateBase">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>153</red>
+        <green>153</green>
+        <blue>153</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="NoRole">
       <brush brushstyle="SolidPattern">
        <color alpha="255">
         <red>153</red>
@@ -116,7 +197,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>497</width>
+      <width>492</width>
       <height>100</height>
      </rect>
     </property>
@@ -124,11 +205,20 @@
      <palette>
       <active>
        <colorrole role="WindowText">
-        <brush brushstyle="SolidPattern">
+        <brush brushstyle="NoBrush">
          <color alpha="255">
           <red>0</red>
           <green>0</green>
           <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+       <colorrole role="Button">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>153</red>
+          <green>153</green>
+          <blue>153</blue>
          </color>
         </brush>
        </colorrole>
@@ -162,9 +252,9 @@
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>97</red>
-          <green>97</green>
-          <blue>97</blue>
+          <red>153</red>
+          <green>153</green>
+          <blue>153</blue>
          </color>
         </brush>
        </colorrole>
@@ -197,6 +287,15 @@
          </color>
         </brush>
        </colorrole>
+       <colorrole role="Button">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>153</red>
+          <green>153</green>
+          <blue>153</blue>
+         </color>
+        </brush>
+       </colorrole>
        <colorrole role="Light">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
@@ -227,9 +326,9 @@
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>97</red>
-          <green>97</green>
-          <blue>97</blue>
+          <red>153</red>
+          <green>153</green>
+          <blue>153</blue>
          </color>
         </brush>
        </colorrole>
@@ -262,6 +361,15 @@
          </color>
         </brush>
        </colorrole>
+       <colorrole role="Button">
+        <brush brushstyle="SolidPattern">
+         <color alpha="255">
+          <red>153</red>
+          <green>153</green>
+          <blue>153</blue>
+         </color>
+        </brush>
+       </colorrole>
        <colorrole role="Light">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
@@ -283,18 +391,18 @@
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>97</red>
-          <green>97</green>
-          <blue>97</blue>
+          <red>153</red>
+          <green>153</green>
+          <blue>153</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>97</red>
-          <green>97</green>
-          <blue>97</blue>
+          <red>153</red>
+          <green>153</green>
+          <blue>153</blue>
          </color>
         </brush>
        </colorrole>
@@ -319,11 +427,22 @@
       </disabled>
      </palette>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(153, 153, 153);
+border-color: rgb(153, 153, 153);
+border: (0);</string>
+    </property>
     <property name="tabShape">
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>20</width>
+      <height>20</height>
+     </size>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -341,6 +460,9 @@
         <height>70</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
+      </property>
       <property name="text">
        <string>Abrir</string>
       </property>
@@ -353,6 +475,9 @@
         <width>70</width>
         <height>70</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
       </property>
       <property name="text">
        <string>Guardar</string>
@@ -367,6 +492,9 @@
         <height>70</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
+      </property>
       <property name="text">
        <string>Formato</string>
       </property>
@@ -380,6 +508,9 @@
         <height>70</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
+      </property>
       <property name="text">
        <string>Borrar</string>
       </property>
@@ -392,6 +523,9 @@
         <width>70</width>
         <height>70</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
       </property>
       <property name="text">
        <string>Zoom</string>
@@ -411,6 +545,9 @@
         <height>70</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
+      </property>
       <property name="text">
        <string>Distancia</string>
       </property>
@@ -423,6 +560,9 @@
         <width>70</width>
         <height>70</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
       </property>
       <property name="text">
        <string>Azimut</string>
@@ -437,6 +577,9 @@
         <height>70</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
+      </property>
       <property name="text">
        <string>Itinerario</string>
       </property>
@@ -449,6 +592,9 @@
         <width>70</width>
         <height>70</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
       </property>
       <property name="text">
        <string>Nivelación</string>
@@ -463,6 +609,9 @@
         <height>70</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
+      </property>
       <property name="text">
        <string>Poligonal</string>
       </property>
@@ -476,6 +625,9 @@
         <height>70</height>
        </rect>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
+      </property>
       <property name="text">
        <string>Helmert 2D</string>
       </property>
@@ -488,6 +640,9 @@
         <width>70</width>
         <height>70</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(191, 191, 191);</string>
       </property>
       <property name="text">
        <string>Helmert 3D</string>
@@ -545,6 +700,8 @@
       <property name="font">
        <font>
         <pointsize>7</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
         <kerning>false</kerning>
        </font>
       </property>
@@ -630,6 +787,13 @@
         <width>481</width>
         <height>181</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>7</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
       </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
        <number>95</number>
