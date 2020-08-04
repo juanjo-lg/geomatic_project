@@ -117,15 +117,35 @@ def select_item(event=None):
     item_data = table.item(table_item, option="values")
     return item_data
 
+def create_canvas(event=None):
+    fig.clear()
+    fig = Figure(figsize=(5,5), dpi=100)
+    ax = fig.add_subplot(1,1,1, xscale="linear", yscale = "linear")
+    ax.set_xlabel("Coordenadas X")
+    ax.set_ylabel("Coordenadas Y")
+    ax.set_autoscale_on(True)
+
+# Función para graficar puntos en el canvas.
+def show_points(event=None):
+    for i in items_to_show:
+        for j in i:
+            j = float(j)
+            print(type(j))
+    a=[5059.608,5020.755,5030.397]
+    b=[10020.083,10022.733,10026.043]
+    ax.plot(a,b,"bo")
+    #ax.plot([i[0] for i in items_to_show],[i[1] for i in items_to_show],'bo')
+    canvas.draw()
+
 def draw_canvas(event=None):
-    coord = select_item()[1:3]
+    coord = list(select_item()[1:3])
     if coord != "":
         items_to_show.append(coord)
     print(items_to_show)
     #ax.plot(coord[0],coord[1],'bo')
-    ax.plot([200,700,900,500,300,400,500],[100,000,800,600,400,300,700],'bo')
+    #ax.plot([i[0] for i in items_to_show],[i[1] for i in items_to_show],'bo')
     #ax.scatter(coord[0],coord[1],s=10)
-    canvas.draw()
+    #canvas.draw()
 
 
 # Construcción de menu principal.
@@ -183,10 +203,15 @@ btn_save = tk.Button(fr_tool, text="Guardar", command=draw_canvas,
     bg='gray38', fg="gray75")
 btn_save.pack(side="left", ipadx=5, ipady=5)
 
-btn_format = tk.Button(fr_tool, text="Formato", command='',
+btn_draw = tk.Button(fr_tool, text="Dibujar", command=show_points,
     height=2, width=5, relief=tk.SOLID, borderwidth=1,
     bg='gray38', fg="gray75")
-btn_format.pack(side="left", ipadx=5, ipady=5)
+btn_draw.pack(side="left", ipadx=5, ipady=5)
+
+btn_new_canv = tk.Button(fr_tool, text="Canvas", command=draw_canvas,
+    height=2, width=5, relief=tk.SOLID, borderwidth=1,
+    bg='gray38', fg="gray75")
+btn_new_canv.pack(side="left", ipadx=5, ipady=5)
 
 btn_dist = tk.Button(fr_tool, text="Distancia", command='',
     height=2, width=5, relief=tk.SOLID, borderwidth=1,
@@ -240,11 +265,11 @@ table.heading("5", text="Código")
 fig = Figure(figsize=(5,5), dpi=100)
 #t = np.arange(0, 3, .01)
 #fig.add_subplot(111).plot(t, 2*np.sin(2*np.pi*t))
-ax = fig.add_subplot(1,1,1)
+ax = fig.add_subplot(1,1,1, xscale="linear", yscale = "linear")
 """ax.add_axes([0,0,1,1])"""
 ax.set_xlabel("Coordenadas X")
 ax.set_ylabel("Coordenadas Y")
-#ax.set_autoscale_on(True)
+ax.set_autoscale_on(True)
 #fig.add_subplot(111).plot(20,33,'bo')
 
 canvas = FigureCanvasTkAgg(fig, master=fr_canvas)
