@@ -33,6 +33,8 @@ root.configure(background="gray60")
 
 # Lista de archivos abiertos.
 file_opened = []
+# Lista de puntos a mostrar en el canvas.
+items_to_show = []
 
 # Función para abrir un archivo desde el explorador.
 def open_file(event=None):
@@ -117,7 +119,11 @@ def select_item(event=None):
 
 def draw_canvas(event=None):
     coord = select_item()[1:3]
-    ax.plot(coord[0],coord[1],'bo')
+    if coord != "":
+        items_to_show.append(coord)
+    print(items_to_show)
+    #ax.plot(coord[0],coord[1],'bo')
+    ax.plot([200,700,900,500,300,400,500],[100,000,800,600,400,300,700],'bo')
     #ax.scatter(coord[0],coord[1],s=10)
     canvas.draw()
 
@@ -235,12 +241,20 @@ fig = Figure(figsize=(5,5), dpi=100)
 #t = np.arange(0, 3, .01)
 #fig.add_subplot(111).plot(t, 2*np.sin(2*np.pi*t))
 ax = fig.add_subplot(1,1,1)
-ax.set_autoscale_on(True)
+"""ax.add_axes([0,0,1,1])"""
+ax.set_xlabel("Coordenadas X")
+ax.set_ylabel("Coordenadas Y")
+#ax.set_autoscale_on(True)
 #fig.add_subplot(111).plot(20,33,'bo')
 
 canvas = FigureCanvasTkAgg(fig, master=fr_canvas)
 canvas.draw()
 canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH, expand = 1)
+
+# Añadiendo toolbar al canvas.
+toolbar = NavigationToolbar2Tk(canvas, fr_canvas)
+toolbar.update()
+canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
 # Se muestra el menu.
 root.config(menu=menubar)
