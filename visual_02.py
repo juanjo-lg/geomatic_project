@@ -25,6 +25,10 @@ class App(tk.Tk):
         self.config_frames()
         self.draw_canvas(self.fr_canvas)
         self.draw_note(self.fr_note)
+        # El evento de cerrar desde el aspa se conecta con la función cerrar.
+        self.protocol("WM_DELETE_WINDOW", self.close)
+        # Enlace de los eventos con los atajos.
+        self.bind('<Control-q>', self.close)  # Siempre funciona enlazado con la raiz.
     def config_root(self):
         # Configuración de ventana principal.
         self.title("TFG - Juan José Lorenzo Gutiérrez")
@@ -146,8 +150,6 @@ class App(tk.Tk):
 # Inicializador de la App.
 def main():
     app = App()
-    # Enlace de los eventos con los atajos.
-    app.bind('<Control-q>', app.close)  # Siempre funciona enlazado con la raiz.
     app.mainloop()
 
 if __name__ == '__main__':
