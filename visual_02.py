@@ -86,29 +86,35 @@ class App(tk.Tk):
         def file():
             self.fr_file = ttk.Frame(master,style='TFrame')
             # Botón para abrir archivos.
+            # Imagen para botón "abrir".
+            self.img_abrir = tk.PhotoImage(file="images/carpeta_abrir.png")
             self.btn_open = tk.Button(
-                self.fr_file,text='Abrir',
-                height=int(self.screen_size[1]/12),
-                width=10,bg="grey60",
+                self.fr_file,image=self.img_abrir,text='Abrir',
+                compound=tk.TOP,height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
                 relief=tk.FLAT)
             self.btn_open.pack(side=tk.LEFT)
+
             # Frame para separadores.
             self.fr_separator = ttk.Frame(self.fr_file,style='TFrame')
             self.fr_separator.pack(side=tk.LEFT)
             # Etiqueta de separadores.
             self.lbl_separator = tk.Label(self.fr_separator,
-                text='Separador de puntos',
+                text='Separador de Datos',
                 background="gray60", fg="black")
             self.lbl_separator.pack(side=tk.TOP,pady=5)
             # Combobox con los distintos separadores.
             self.cmb_separator = ttk.Combobox(self.fr_separator,values=self.splitters)
             #self.cmb_separator["values"] = self.splitters
             self.cmb_separator.pack(pady=5)
+            # Botón para cerrar el programa.
+            # Imagen para botón "cerrar".
+            self.img_close = tk.PhotoImage(file="images/cerrar_2.png")
             self.btn_close = tk.Button(
-                self.fr_file,text='Cerrar',
+                self.fr_file,image=self.img_close,text='Cerrar',
                 command=self.close,
                 height=int(self.screen_size[1]/12),
-                width=10,bg="grey60",
+                width=80,bg="grey60",
                 relief=tk.FLAT)
             self.btn_close.pack(side=tk.LEFT)
             self.notebook.add(self.fr_file,text="Archivo")
@@ -135,9 +141,13 @@ class App(tk.Tk):
         if request == True:
             self.destroy()  # Con sys.exit() no funciona.
 
+
+
 # Inicializador de la App.
 def main():
     app = App()
+    # Enlace de los eventos con los atajos.
+    app.bind('<Control-q>', app.close)  # Siempre funciona enlazado con la raiz.
     app.mainloop()
 
 if __name__ == '__main__':
