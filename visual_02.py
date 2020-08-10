@@ -209,17 +209,10 @@ class App(tk.Tk):
             self.btn_info = tk.Button(
                 self.fr_info,image=self.img_info,text='Información',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="grey60",command=self.show_info,
                 relief=tk.FLAT)
             self.btn_info.pack(side=tk.LEFT)
             self.notebook.add(self.fr_info,text="Información")
-            """Autoría de los logos utilizados:
-            - Smashicons
-            - Freepik
-            - Google"""
-            def show_info():
-                msgbox_info = tk.messagebox(title='Acerca de:',
-                message='Autoría de los logos utilizados: \n- Smashicons\n- Freepik\n- Google')
         # Inicialización de pestañas file y calculus
         file()
         calculus()
@@ -231,17 +224,24 @@ class App(tk.Tk):
         self.ax = self.fig.add_subplot(1,1,1)
         self.ax.set_xlabel('Coordenadas X')
         self.ax.set_ylabel('Coordenadas Y')
+        """self.range = (-100,100,1)
+        self.points = self.range*math.sin(1/self.range)
+        self.ax.plot(self.range,self.points)"""
         self.canvas = FigureCanvasTkAgg(self.fig, master=master)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
+    def draw_table(self,master):
+        pass
+    def show_info(self, event=None):
+        mess = 'Autor: Juan José Lorenzo Gutiérrez\nMail: juanjolorenzogutierrez@gmail.com\n\nProyecto desarrollado con Python 3x y Tkinter para el TFG del curso de adaptación al Grado de Geomática y Topografía.\n\nIconos obtenidos de: \n- Smashicons\n- Freepik\n- Google'
+        msgbox_info=messagebox.showinfo(title='Acerca de:',
+        message=mess)
     def close(self, event=None):
         # Función para cerrar el programa.
         mess = "¿Está seguro de que quiere salir del programa?"
         request = messagebox.askyesno(title="¡Aviso!", message=mess)
         if request == True:
             self.destroy()  # Con sys.exit() no funciona.
-
-
 
 # Inicializador de la App.
 def main():
