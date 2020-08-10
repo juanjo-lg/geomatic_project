@@ -21,7 +21,7 @@ class App(tk.Tk):
         self.file_opened = []
         self.item_to_show = []
         self.config_root()
-        self.config_menu()
+        #self.config_menu()
         self.config_frames()
         self.draw_canvas(self.fr_canvas)
         self.draw_note(self.fr_note)
@@ -91,43 +91,139 @@ class App(tk.Tk):
             self.fr_file = ttk.Frame(master,style='TFrame')
             # Botón para abrir archivos.
             # Imagen para botón "abrir".
-            self.img_abrir = tk.PhotoImage(file="images/carpeta_abrir.png")
+            self.img_open = tk.PhotoImage(file="images/carpeta_3.png")
             self.btn_open = tk.Button(
-                self.fr_file,image=self.img_abrir,text='Abrir',
+                self.fr_file,image=self.img_open,text='Abrir',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
                 width=80,bg="grey60",
                 relief=tk.FLAT)
             self.btn_open.pack(side=tk.LEFT)
-
             # Frame para separadores.
-            self.fr_separator = ttk.Frame(self.fr_file,style='TFrame')
-            self.fr_separator.pack(side=tk.LEFT)
+            self.fr_separator = ttk.Frame(self.fr_file,style='TFrame',relief=tk.SUNKEN,borderwidth=1)
+            self.fr_separator.pack(side=tk.LEFT,ipadx=5)
             # Etiqueta de separadores.
             self.lbl_separator = tk.Label(self.fr_separator,
                 text='Separador de Datos',
                 background="gray60", fg="black")
             self.lbl_separator.pack(side=tk.TOP,pady=5)
             # Combobox con los distintos separadores.
-            self.cmb_separator = ttk.Combobox(self.fr_separator,values=self.splitters)
+            self.cmb_separator = ttk.Combobox(self.fr_separator,
+                values=self.splitters)
             #self.cmb_separator["values"] = self.splitters
             self.cmb_separator.pack(pady=5)
-            # Botón para cerrar el programa.
-            # Imagen para botón "cerrar".
-            self.img_close = tk.PhotoImage(file="images/cerrar_2.png")
-            self.btn_close = tk.Button(
-                self.fr_file,image=self.img_close,text='Cerrar',
-                command=self.close,
+            # Botón para Guardar archivos.
+            # Imagen para botón "guardar".
+            self.img_save = tk.PhotoImage(file="images/salvar.png")
+            self.btn_save = tk.Button(
+                self.fr_file,image=self.img_save,text='Guardar',
+                compound=tk.TOP,height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_save.pack(side=tk.LEFT)
+            # Botón para abrir base de datos.
+            # Imagen para botón "base de datos".
+            self.img_db = tk.PhotoImage(file="images/base-de-datos_2.png")
+            self.btn_db = tk.Button(
+                self.fr_file,image=self.img_db,text='DB',
+                compound=tk.TOP,
                 height=int(self.screen_size[1]/12),
                 width=80,bg="grey60",
                 relief=tk.FLAT)
-            self.btn_close.pack(side=tk.LEFT)
+            self.btn_db.pack(side=tk.LEFT)
+            # Botón para filtrar puntos.
+            # Imagen para botón "Filtrar".
+            self.img_filter = tk.PhotoImage(file="images/filtrar.png")
+            self.btn_filter = tk.Button(
+                self.fr_file,image=self.img_filter,text='Filtrar',
+                compound=tk.TOP,
+                height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_filter.pack(side=tk.LEFT)
+            # Botón para Cálculo de estadísticas.
+            # Imagen para botón "Estadísticas".
+            self.img_stat = tk.PhotoImage(file="images/estadistica.png")
+            self.btn_stat = tk.Button(
+                self.fr_file,image=self.img_stat,text='Estadística',
+                compound=tk.TOP,
+                height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_stat.pack(side=tk.LEFT)
+            # Botón para cerrar el programa.
+            # Imagen para botón "cerrar".
+            self.img_close = tk.PhotoImage(file="images/cerrar_ico_2.png")
+            self.btn_close = tk.Button(
+                self.fr_file,image=self.img_close,text='Cerrar',
+                compound=tk.TOP,command=self.close,
+                height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_close.pack(side=tk.RIGHT)
             self.notebook.add(self.fr_file,text="Archivo")
         def calculus():
             self.fr_calc = ttk.Frame(master,style='TFrame')
+            # Botón de distancia y azimut.
+            # Imagen para botón "Distancia y azimut".
+            self.img_dist_azim = tk.PhotoImage(file="images/calculadora.png")
+            self.btn_dist_azim = tk.Button(
+                self.fr_calc,image=self.img_dist_azim,text='Dist & Azim',
+                compound=tk.TOP,height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_dist_azim.pack(side=tk.LEFT)
+            # Botón de transformación.
+            # Imagen para botón "Transformación".
+            self.img_trans = tk.PhotoImage(file="images/global.png")
+            self.btn_trans = tk.Button(
+                self.fr_calc,image=self.img_trans,text='Transformación',
+                compound=tk.TOP,height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_trans.pack(side=tk.LEFT)
             self.notebook.add(self.fr_calc,text="Cálculos")
+            # Botón de Intersección.
+            # Imagen para botón "Intersección".
+            self.img_inter = tk.PhotoImage(file="images/mercado.png")
+            self.btn_inter = tk.Button(
+                self.fr_calc,image=self.img_inter,text='Intersección',
+                compound=tk.TOP,height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_inter.pack(side=tk.LEFT)
+            self.notebook.add(self.fr_calc,text="Cálculos")
+            # Botón de poligonal.
+            # Imagen para botón "Itinerario".
+            self.img_polig = tk.PhotoImage(file="images/mapa.png")
+            self.btn_polig = tk.Button(
+                self.fr_calc,image=self.img_polig,text='Itinerario',
+                compound=tk.TOP,height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_polig.pack(side=tk.LEFT)
+        def info():
+            self.fr_info = ttk.Frame(master,style='TFrame')
+            # Botón Información.
+            # Imagen para botón "Información".
+            self.img_info = tk.PhotoImage(file="images/ayuda.png")
+            self.btn_info = tk.Button(
+                self.fr_info,image=self.img_info,text='Información',
+                compound=tk.TOP,height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_info.pack(side=tk.LEFT)
+            self.notebook.add(self.fr_info,text="Información")
+            """Autoría de los logos utilizados:
+            - Smashicons
+            - Freepik
+            - Google"""
+            def show_info():
+                msgbox_info = tk.messagebox(title='Acerca de:',
+                message='Autoría de los logos utilizados: \n- Smashicons\n- Freepik\n- Google')
         # Inicialización de pestañas file y calculus
         file()
         calculus()
+        info()
         self.notebook.pack(fill=tk.BOTH,expand=True)
     def draw_canvas(self,master):
         # Configuración de canvas.
