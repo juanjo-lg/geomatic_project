@@ -91,7 +91,7 @@ class App(tk.Tk):
             height=int(self.screen_size[1]/12))
         """print(self.screen_size[1]/12)"""
         # Funciones para crear distintas pestañas.
-        def file():
+        def file(event=None):
             self.fr_file = ttk.Frame(master,style='TFrame')
             # Botón para abrir archivos.
             # Imagen para botón "abrir".
@@ -114,8 +114,11 @@ class App(tk.Tk):
             # Combobox con los distintos separadores.
             self.cmb_separator = ttk.Combobox(self.fr_separator,
                 values=self.splitters)
+            self.cmb_separator.set(self.splitters[1])
             #self.cmb_separator["values"] = self.splitters
             self.cmb_separator.pack(pady=5)
+            """self.cmb_separator.bind("<<ComboboxSelected>>",
+                print(self.cmb_separator.get()))"""
             # Botón para Guardar archivos.
             # Imagen para botón "guardar".
             self.img_save = tk.PhotoImage(file="images/salvar.png")
@@ -289,13 +292,15 @@ class App(tk.Tk):
                     ("Fichero GSI (Leica)", ".txt")],
                     title="Cargar Puntos")
             if self.file_name not in self.file_opened:
-
                 # Solo se inserta el nombre del archivo sin la ruta.
                 self.file_no_path = self.table.insert(
                     "", 1, text=os.path.basename(self.file_name))
-
                 with open(self.file_name) as self.file:
-                    separator = "\t"
+                    separators = [" ","\t",",",";"]
+                    for i in enumerate(self.splitters):
+                        if i[1] == self.cmb_separator.get():
+                            # Usa el índice de la lista de separadores.
+                            separator = separators[i[0]]
                     # Contador de número de fila para insertarlo.
                     count = 1
                     # Variables para el cálculo de la media de coordenadas.
@@ -308,6 +313,7 @@ class App(tk.Tk):
                         # Así lee los puntos separados tanto por espacios como por tabulaciones.
                         line = "\t".join(line.split())
                         line = line.split(separator)
+                        print(line)
                         # Cambio de formato de los números.
                         line[0] = int(line[0])
                         line[1] = round(float(line[1]), 3)
@@ -321,22 +327,30 @@ class App(tk.Tk):
                         # se añade "Por Defecto"
                         except:
                             line.append("Por Defecto")
-
                         # print(line)
                         self.table.insert(self.file_no_path, count, values=(
                             line[0], line[1], line[2], line[3], line[4]))
-                        count += 1
+
                         x_sum += float(line[1])
                         y_sum += float(line[2])
-
-                    #Posible fallo en count, podría ser count-1
-                    #No funciona bien, hay que arreglarlo para añadir la media al final de la lista
+                        #Posible fallo en count, podría ser count-1
+                        #No funciona bien, hay que arreglarlo para añadir la media al final de la lista
+                        count += 1
                     self.file_opened.append((x_sum/count, y_sum/count))
                     print(self.file_opened[0])
             else:
                 messagebox.showerror(title="Error",
                                      message="El archivo que intenta abrir ya se encuentra abierto.")
         except:
+            try:
+                # Elimina de la lista el archivo que no se abre.
+                self.file_opened.remove(self.file_name)
+                # Elimina de la tabla el nombre de archivo que no se abre.
+                # FUNCIONA!!!!!!!
+                item_to_delete = len(self.table.get_children())-1
+                self.table.delete(self.table.get_children()[item_to_delete])
+            except:
+                pass # Habrá que implementar algo aquí.
             messagebox.showerror(title="Error",
                                  message="Ha habido un error al abrir el archivo.")
     def close(self, event=None):
