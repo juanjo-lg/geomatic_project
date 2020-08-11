@@ -143,7 +143,7 @@ class App(tk.Tk):
             self.img_filter = tk.PhotoImage(file="images/filtrar.png")
             self.btn_filter = tk.Button(
                 self.fr_file,image=self.img_filter,text='Filtrar',
-                compound=tk.TOP,
+                compound=tk.TOP,command=self.draw_all,
                 height=int(self.screen_size[1]/12),
                 width=80,bg="grey60",
                 relief=tk.FLAT)
@@ -358,6 +358,11 @@ class App(tk.Tk):
         self.item_data = self.table.item(self.table_item,option="values")
         self.ax.scatter(float(self.item_data[1]),float(self.item_data[2]))
         self.canvas.draw()
+    def draw_all(self, event=None):
+        for child in self.table.get_children():
+            """ESTO NO FUNCIONA, HAY QUE ARREGLARRRRRR!!!!"""
+            #print(self.table.item(child)["values"])
+            print("a")
     def close(self, event=None):
         # Función para cerrar el programa.
         mess = "¿Está seguro de que quiere salir del programa?"
