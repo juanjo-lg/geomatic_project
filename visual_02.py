@@ -7,6 +7,8 @@ Created on Wen Aug 05 12:17:00 2020
 
 """GUI para la aplicación de topografía para el TFG OOP (v.02)."""
 
+import textwrap # Módulo para dar formato a texto y quitarle la sangría.
+import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -25,6 +27,7 @@ class App(tk.Tk):
         self.config_frames()
         self.draw_canvas(self.fr_canvas)
         self.draw_note(self.fr_note)
+        self.draw_table(self.fr_table)
         # El evento de cerrar desde el aspa se conecta con la función cerrar.
         self.protocol("WM_DELETE_WINDOW", self.close)
         # Enlace de los eventos con los atajos.
@@ -34,7 +37,7 @@ class App(tk.Tk):
         self.title("TFG - Juan José Lorenzo Gutiérrez")
         self.screen_size = self.winfo_screenwidth(),self.winfo_screenheight()
         self.geometry("%dx%d+%d-%d" %
-            (self.screen_size[0], self.screen_size[1]-100, -10, 40))
+            (self.screen_size[0], self.screen_size[1]-70, -10, 30))
         self.configure(background="gray60")
     def config_menu(self):
         # Configuración de barra de menu.
@@ -60,24 +63,25 @@ class App(tk.Tk):
         # Configuración de los Frames de la App.
         self.fr_canvas = tk.Frame(width=self.screen_size[0]/2)
         self.fr_note = tk.Frame()
-        self.fr_table = tk.Frame(bg='gray38',width=self.screen_size[0]/2)
+        self.fr_table = tk.Frame(bg='gray38',width=self.screen_size[0]/2,
+            height=self.screen_size[1]/4)
         # Colocación de Frames.
         self.fr_canvas.pack(side=tk.RIGHT,fill=tk.BOTH,expand=True)
         self.fr_note.pack(side=tk.TOP,fill=tk.Y)
-        self.fr_table.pack(fill=tk.Y)
+        self.fr_table.pack(side=tk.BOTTOM,fill=tk.BOTH,expand=True)
     def draw_note(self,master):
         # Configuracion del Notebook con estilos de diseño.
-        note_style = ttk.Style()
+        self.style = ttk.Style()
         # De esta forma se quitan los bordes.
-        note_style.theme_use('default')
+        self.style.theme_use('default')
         # 'TNotebook','TNotebook.Tab' y 'TFrame' son estilos de ttk.
-        note_style.configure('TNotebook',borderwidth=0)
+        self.style.configure('TNotebook',borderwidth=0)
         # Quita las líneas punteadas de las tablas al seleccionarlas.
-        note_style.configure('TNotebook.Tab',borderwidth=0,
-            focuscolor=note_style.configure(".")["background"])
-        note_style.configure('TFrame',borderwidth=0,background="gray60")
+        self.style.configure('TNotebook.Tab',borderwidth=0,
+            focuscolor=self.style.configure(".")["background"])
+        self.style.configure('TFrame',borderwidth=0,background="gray60")
         # Con 'readonly' no salen las palabras enmarcadas.
-        note_style.configure('TCombobox',
+        self.style.configure('TCombobox',
             selectbackground=[('readonly','white')],
             selectforeground=[('readonly','black')],
             fieldbackground=[('readonly','gray60')])
@@ -95,11 +99,12 @@ class App(tk.Tk):
             self.btn_open = tk.Button(
                 self.fr_file,image=self.img_open,text='Abrir',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="grey60",command=self.open_file,
                 relief=tk.FLAT)
             self.btn_open.pack(side=tk.LEFT)
             # Frame para separadores.
-            self.fr_separator = ttk.Frame(self.fr_file,style='TFrame',relief=tk.SUNKEN,borderwidth=1)
+            self.fr_separator = ttk.Frame(self.fr_file,style='TFrame',
+                relief=tk.SUNKEN,borderwidth=1)
             self.fr_separator.pack(side=tk.LEFT,ipadx=5)
             # Etiqueta de separadores.
             self.lbl_separator = tk.Label(self.fr_separator,
@@ -224,18 +229,116 @@ class App(tk.Tk):
         self.ax = self.fig.add_subplot(1,1,1)
         self.ax.set_xlabel('Coordenadas X')
         self.ax.set_ylabel('Coordenadas Y')
-        """self.range = (-100,100,1)
-        self.points = self.range*math.sin(1/self.range)
-        self.ax.plot(self.range,self.points)"""
+        # Prueba con dos puntos
+        self.ax.scatter([353342.2613,200],[4610774.0014,200])
+        #self.ax.set_xticks(range(75,125))
+        # Prueba para mostrar los dos puntos.
+        self.ax.set_yticks(range(198,202,1))
         self.canvas = FigureCanvasTkAgg(self.fig, master=master)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
+        self.toolbar = NavigationToolbar2Tk(self.canvas,master)
+        self.toolbar.update()
+        self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
     def draw_table(self,master):
-        pass
+        # Configuracioón de la tabla de puntos.
+        # Label para la tabla.
+        self.lbl_table = tk.Label(master,text="Puntos",bg='gray38',fg="gray75")
+        self.lbl_table.pack()
+        self.table = ttk.Treeview(master,height=1000)
+        self.table.pack(fill=tk.BOTH,expand=True)
+        # Scrollbar para Treeview. Funciona solamente enlazándola al Frame.
+        self.scroll_tree = ttk.Scrollbar(self.table, orient="vertical",
+            command=self.table.yview)
+        self.scroll_tree.pack(side="right", fill="y")
+        # Configuración de la scroolbar.
+        self.table.configure(yscrollcommand=self.scroll_tree.set)
+        # Inserción de campos en la tabla.
+        self.table["columns"] = ("1", "2", "3", "4", "5")
+        self.table.column("#0", width=150, minwidth=100, stretch=tk.NO)
+        self.table.column("1", width=100, minwidth=40, stretch=tk.NO)
+        self.table.column("2", width=130, minwidth=50, stretch=tk.NO)
+        self.table.column("3", width=130, minwidth=50, stretch=tk.NO)
+        self.table.column("4", width=130, minwidth=50, stretch=tk.NO)
+        self.table.column("5", width=130, minwidth=50, stretch=tk.NO)
+        self.table.heading("#0", text="Archivo")
+        self.table.heading("1", text="Número")
+        self.table.heading("2", text="X")
+        self.table.heading("3", text="Y")
+        self.table.heading("4", text="Z")
+        self.table.heading("5", text="Código")
+        # Configuración de estilo del Treeview.
+        self.style.configure('Treeview.Heading',
+            relief=tk.FLAT,background="gray75")
+        self.style.configure('Treeview',background="grey60",
+            focuscolor=self.style.configure(".")["background"])
+        """NO FUNCIONA FOCUSCOLOR EN ESTA OCASIÓN"""
     def show_info(self, event=None):
-        mess = 'Autor: Juan José Lorenzo Gutiérrez\nMail: juanjolorenzogutierrez@gmail.com\n\nProyecto desarrollado con Python 3x y Tkinter para el TFG del curso de adaptación al Grado de Geomática y Topografía.\n\nIconos obtenidos de: \n- Smashicons\n- Freepik\n- Google'
-        msgbox_info=messagebox.showinfo(title='Acerca de:',
-        message=mess)
+        mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
+        'Mail: juanjolorenzogutierrez@gmail.com\n\n'\
+        'Proyecto desarrollado con Python 3x y Tkinter para el TFG del curso'\
+        ' de adaptación al Grado de Geomática y Topografía.\n\n'\
+        'Iconos obtenidos de:\n- Smashicons\n- Freepik\n- Google'
+        msgbox_info=messagebox.showinfo(title='Acerca de:',message=mess)
+    def open_file(self,event=None):
+        # Función para abrir fichero de puntos.
+        try:
+            self.file_name = filedialog.askopenfilename(defaultextension="*.*",
+                filetypes=[("All Files", "*.*"),
+                    ("Archivos de texto", ".txt"),
+                    ("Fichero GSI (Leica)", ".txt")],
+                    title="Cargar Puntos")
+            if self.file_name not in self.file_opened:
+
+                # Solo se inserta el nombre del archivo sin la ruta.
+                self.file_no_path = self.table.insert(
+                    "", 1, text=os.path.basename(self.file_name))
+
+                with open(self.file_name) as self.file:
+                    separator = "\t"
+                    # Contador de número de fila para insertarlo.
+                    count = 1
+                    # Variables para el cálculo de la media de coordenadas.
+                    x_sum = 0
+                    y_sum = 0
+                    self.file_opened.append(self.file_name)
+                    for line in self.file:
+                        # Se podría instanciar un punto por cada línea que se lee del archivo.
+                        # Se crea una lista formada por las palabra de cada línea.
+                        # Así lee los puntos separados tanto por espacios como por tabulaciones.
+                        line = "\t".join(line.split())
+                        line = line.split(separator)
+                        # Cambio de formato de los números.
+                        line[0] = int(line[0])
+                        line[1] = round(float(line[1]), 3)
+                        line[2] = round(float(line[2]), 3)
+                        line[3] = round(float(line[3]), 3)
+                        # Supresión de salto de línea en el código.
+                        try:
+                            line[4] = line[4].rstrip()
+
+                        # En caso de que algún punto no tenga código,
+                        # se añade "Por Defecto"
+                        except:
+                            line.append("Por Defecto")
+
+                        # print(line)
+                        self.table.insert(self.file_no_path, count, values=(
+                            line[0], line[1], line[2], line[3], line[4]))
+                        count += 1
+                        x_sum += float(line[1])
+                        y_sum += float(line[2])
+
+                    #Posible fallo en count, podría ser count-1
+                    #No funciona bien, hay que arreglarlo para añadir la media al final de la lista
+                    self.file_opened.append((x_sum/count, y_sum/count))
+                    print(self.file_opened[0])
+            else:
+                messagebox.showerror(title="Error",
+                                     message="El archivo que intenta abrir ya se encuentra abierto.")
+        except:
+            messagebox.showerror(title="Error",
+                                 message="Ha habido un error al abrir el archivo.")
     def close(self, event=None):
         # Función para cerrar el programa.
         mess = "¿Está seguro de que quiere salir del programa?"
