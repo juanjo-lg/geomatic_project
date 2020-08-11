@@ -89,7 +89,6 @@ class App(tk.Tk):
         self.notebook = ttk.Notebook(master,style='TNotebook',
             width=int(self.screen_size[0]/2),
             height=int(self.screen_size[1]/12))
-        """print(self.screen_size[1]/12)"""
         # Funciones para crear distintas pestañas.
         def file(event=None):
             self.fr_file = ttk.Frame(master,style='TFrame')
@@ -113,7 +112,7 @@ class App(tk.Tk):
             self.lbl_separator.pack(side=tk.TOP,pady=5)
             # Combobox con los distintos separadores.
             self.cmb_separator = ttk.Combobox(self.fr_separator,
-                values=self.splitters)
+                values=self.splitters,justify=tk.CENTER,state="readonly")
             self.cmb_separator.set(self.splitters[1])
             #self.cmb_separator["values"] = self.splitters
             self.cmb_separator.pack(pady=5)
@@ -126,6 +125,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_save,text='Guardar',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
                 width=80,bg="grey60",
+                command=lambda:print(type(self.notebook.tabs())),
                 relief=tk.FLAT)
             self.btn_save.pack(side=tk.LEFT)
             # Botón para abrir base de datos.
@@ -135,7 +135,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_db,text='DB',
                 compound=tk.TOP,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="grey60",command=self.draw_points,
                 relief=tk.FLAT)
             self.btn_db.pack(side=tk.LEFT)
             # Botón para filtrar puntos.
@@ -233,10 +233,10 @@ class App(tk.Tk):
         self.ax.set_xlabel('Coordenadas X')
         self.ax.set_ylabel('Coordenadas Y')
         # Prueba con dos puntos
-        self.ax.scatter([353342.2613,200],[4610774.0014,200])
+        #self.ax.scatter([353342.2613,200],[4610774.0014,200])
         #self.ax.set_xticks(range(75,125))
         # Prueba para mostrar los dos puntos.
-        self.ax.set_yticks(range(198,202,1))
+        #self.ax.set_yticks(range(198,202,1))
         self.canvas = FigureCanvasTkAgg(self.fig, master=master)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
@@ -285,74 +285,79 @@ class App(tk.Tk):
         msgbox_info=messagebox.showinfo(title='Acerca de:',message=mess)
     def open_file(self,event=None):
         # Función para abrir fichero de puntos.
-        try:
-            self.file_name = filedialog.askopenfilename(defaultextension="*.*",
-                filetypes=[("All Files", "*.*"),
-                    ("Archivos de texto", ".txt"),
-                    ("Fichero GSI (Leica)", ".txt")],
-                    title="Cargar Puntos")
-            if self.file_name not in self.file_opened:
-                # Solo se inserta el nombre del archivo sin la ruta.
-                self.file_no_path = self.table.insert(
-                    "", 1, text=os.path.basename(self.file_name))
-                with open(self.file_name) as self.file:
-                    separators = [" ","\t",",",";"]
-                    for i in enumerate(self.splitters):
-                        if i[1] == self.cmb_separator.get():
-                            # Usa el índice de la lista de separadores.
-                            separator = separators[i[0]]
-                    # Contador de número de fila para insertarlo.
-                    count = 1
-                    # Variables para el cálculo de la media de coordenadas.
-                    x_sum = 0
-                    y_sum = 0
-                    self.file_opened.append(self.file_name)
-                    for line in self.file:
-                        # Se podría instanciar un punto por cada línea que se lee del archivo.
-                        # Se crea una lista formada por las palabra de cada línea.
-                        # Así lee los puntos separados tanto por espacios como por tabulaciones.
-                        line = "\t".join(line.split())
-                        line = line.split(separator)
-                        print(line)
-                        # Cambio de formato de los números.
-                        line[0] = int(line[0])
-                        line[1] = round(float(line[1]), 3)
-                        line[2] = round(float(line[2]), 3)
-                        line[3] = round(float(line[3]), 3)
-                        # Supresión de salto de línea en el código.
-                        try:
-                            line[4] = line[4].rstrip()
-
-                        # En caso de que algún punto no tenga código,
-                        # se añade "Por Defecto"
-                        except:
-                            line.append("Por Defecto")
-                        # print(line)
-                        self.table.insert(self.file_no_path, count, values=(
-                            line[0], line[1], line[2], line[3], line[4]))
-
-                        x_sum += float(line[1])
-                        y_sum += float(line[2])
-                        #Posible fallo en count, podría ser count-1
-                        #No funciona bien, hay que arreglarlo para añadir la media al final de la lista
-                        count += 1
-                    self.file_opened.append((x_sum/count, y_sum/count))
-                    print(self.file_opened[0])
-            else:
-                messagebox.showerror(title="Error",
-                                     message="El archivo que intenta abrir ya se encuentra abierto.")
-        except:
+        self.file_name = filedialog.askopenfilename(defaultextension="*.*",
+            filetypes=[("All Files", "*.*"),
+                ("Archivos de texto", ".txt"),
+                ("Fichero GSI (Leica)", ".txt")],
+                title="Cargar Puntos")
+        if self.file_name:
             try:
-                # Elimina de la lista el archivo que no se abre.
-                self.file_opened.remove(self.file_name)
-                # Elimina de la tabla el nombre de archivo que no se abre.
-                # FUNCIONA!!!!!!!
-                item_to_delete = len(self.table.get_children())-1
-                self.table.delete(self.table.get_children()[item_to_delete])
+                if self.file_name not in self.file_opened:
+                    # Solo se inserta el nombre del archivo sin la ruta.
+                    self.file_no_path = self.table.insert(
+                        "", 1, text=os.path.basename(self.file_name))
+                    with open(self.file_name) as self.file:
+                        separators = [" ","\t",",",";"]
+                        for i in enumerate(self.splitters):
+                            if i[1] == self.cmb_separator.get():
+                                # Usa el índice de la lista de separadores.
+                                separator = separators[i[0]]
+                        # Contador de número de fila para insertarlo.
+                        count = 1
+                        # Variables para el cálculo de la media de coordenadas.
+                        x_sum = 0
+                        y_sum = 0
+                        self.file_opened.append(self.file_name)
+                        for line in self.file:
+                            # Se podría instanciar un punto por cada línea que se lee del archivo.
+                            # Se crea una lista formada por las palabra de cada línea.
+                            # Así lee los puntos separados tanto por espacios como por tabulaciones.
+                            line = "\t".join(line.split())
+                            line = line.split(separator)
+                            # Cambio de formato de los números.
+                            line[0] = int(line[0])
+                            line[1] = round(float(line[1]), 3)
+                            line[2] = round(float(line[2]), 3)
+                            line[3] = round(float(line[3]), 3)
+                            # Supresión de salto de línea en el código.
+                            try:
+                                line[4] = line[4].rstrip()
+                            # En caso de que algún punto no tenga código,
+                            # se añade "Por Defecto"
+                            except:
+                                line.append("Por Defecto")
+                            # print(line)
+                            self.table.insert(self.file_no_path,count,values=(
+                                line[0],line[1],line[2],line[3],line[4]))
+
+                            x_sum += float(line[1])
+                            y_sum += float(line[2])
+                            #Posible fallo en count, podría ser count-1
+                            #No funciona bien, hay que arreglarlo para añadir la media al final de la lista
+                            count += 1
+                        self.file_opened.append((x_sum/count, y_sum/count))
+                        print(self.file_opened[0])
+                else:
+                    messagebox.showerror(title="Error",
+                        message="El archivo ya se encuentra abierto.")
             except:
-                pass # Habrá que implementar algo aquí.
-            messagebox.showerror(title="Error",
-                                 message="Ha habido un error al abrir el archivo.")
+                try:
+                    # Elimina de la lista el archivo que no se abre.
+                    self.file_opened.remove(self.file_name)
+                    # Elimina de la tabla el nombre de archivo que no se abre.
+                    # FUNCIONA!!!!!!!
+                    item_to_delete = len(self.table.get_children())-1
+                    self.table.delete(self.table.get_children()[item_to_delete])
+                except:
+                    pass # Habrá que implementar algo aquí.
+                messagebox.showerror(title="Error",
+                    message="Ha habido un error al abrir el archivo.")
+    def draw_points(self, event=None):
+        # Función que dibuja los puntos con sus coordenadas en el canvas.
+        self.table_item = self.table.focus()
+        self.item_data = self.table.item(self.table_item,option="values")
+        self.ax.scatter(float(self.item_data[1]),float(self.item_data[2]))
+        self.canvas.draw()
     def close(self, event=None):
         # Función para cerrar el programa.
         mess = "¿Está seguro de que quiere salir del programa?"
