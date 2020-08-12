@@ -5,7 +5,8 @@ Created on Thu Aug 12 18:20:00 2020
 @author: http://research.iac.es/sieinvens/python-course/source/scipy.html
 """
 
-"""Ejemplo de Ajuste de funciones generales con MMCC con Python"""
+"""Ejemplo de Ajuste de funciones generales con MMCC con Python
+HAY QUE ESTUDIARLO PARA UTILIZAR LEASTSQ"""
 
 """import numpy as np
 from matplotlib import pyplot as plt
