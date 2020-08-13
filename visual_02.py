@@ -359,10 +359,18 @@ class App(tk.Tk):
         self.ax.scatter(float(self.item_data[1]),float(self.item_data[2]))
         self.canvas.draw()
     def draw_all(self, event=None):
-        for child in self.table.get_children():
-            """ESTO NO FUNCIONA, HAY QUE ARREGLARRRRRR!!!!"""
-            #print(self.table.item(child)["values"])
-            print("a")
+        # Forma de iterar entre todos los subelementos de un parent en Treeview.
+        for children in self.table.get_children():
+            child = self.table.get_children(children)
+            self.table.selection_add(child)# Selecciona todos los items.
+        table_items = self.table.selection()
+        """EUREKA!!!! AUNQUE HAY QUE DARLE UNA VUELTA DE TUERCA PORQUE TARDA
+        MUCHO EN DIBUJAR LOS PUNTOS."""
+        for item in table_items:
+            item_data=self.table.item(item,option="values")
+            # print(item_data)
+            self.ax.scatter(float(item_data[1]),float(item_data[2]))
+            self.canvas.draw()
     def close(self, event=None):
         # Función para cerrar el programa.
         mess = "¿Está seguro de que quiere salir del programa?"
