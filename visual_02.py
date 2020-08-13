@@ -369,7 +369,8 @@ class App(tk.Tk):
         for item in table_items:
             item_data=self.table.item(item,option="values")
             # print(item_data)
-            self.ax.scatter(float(item_data[1]),float(item_data[2]))
+            self.ax.plot(float(item_data[1]),float(item_data[2]),
+            color="black",marker=".")
             self.canvas.draw()
     def close(self, event=None):
         # Función para cerrar el programa.
