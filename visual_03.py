@@ -25,9 +25,11 @@ class App(tk.Tk):
         self.config_root()
         #self.config_menu()
         self.config_frames()
-        self.draw_canvas(self.fr_canvas)
         self.draw_note(self.fr_note)
+        self.draw_canvas(self.fr_canvas)
         self.draw_table(self.fr_table)
+        """self.lbl=tk.Label(text="Probandoooo",width=int(self.screen_size[0]/4))
+        self.lbl.pack()"""
         # El evento de cerrar desde el aspa se conecta con la función cerrar.
         self.protocol("WM_DELETE_WINDOW", self.close)
         # Enlace de los eventos con los atajos.
@@ -68,7 +70,8 @@ class App(tk.Tk):
         # Colocación de Frames.
         self.fr_note.pack(side=tk.TOP,fill=tk.Y)
         self.fr_canvas.pack(side=tk.RIGHT,fill=tk.BOTH,expand=True)
-        self.fr_table.pack(side=tk.LEFT,fill=tk.BOTH,expand=True)
+        self.fr_table.pack(side=tk.TOP,fill=tk.BOTH,expand=True)
+
     def draw_note(self,master):
         # Configuracion del Notebook con estilos de diseño.
         self.style = ttk.Style()
@@ -229,17 +232,12 @@ class App(tk.Tk):
     def draw_canvas(self,master):
         # Configuración de canvas.
         # Al cambiar el dpi se mueve al pasar el ratón por fuera del gráfico.
-        self.fig = Figure(figsize=(5,5), dpi=60)
+        self.fig = Figure(figsize=(3,3), dpi=110)
         self.ax = self.fig.add_subplot(1,1,1)
         self.ax.set_xlabel('Coordenadas X')
         self.ax.set_ylabel('Coordenadas Y')
         """Quito las coordenadas para que no me reescalen la figura."""
-        self.ax.format_coord = lambda x, y: ""
-        # Prueba con dos puntos
-        #self.ax.scatter([353342.2613,200],[4610774.0014,200])
-        #self.ax.set_xticks(range(75,125))
-        # Prueba para mostrar los dos puntos.
-        #self.ax.set_yticks(range(198,202,1))
+        #self.ax.format_coord = lambda x, y: ""
         self.canvas = FigureCanvasTkAgg(self.fig,master=master)
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
@@ -263,10 +261,10 @@ class App(tk.Tk):
         # Inserción de campos en la tabla.
         self.table["columns"] = ("1", "2", "3", "4", "5")
         self.table.column("#0", width=150, minwidth=100, stretch=tk.NO)
-        self.table.column("1", width=100, minwidth=40, stretch=tk.NO)
-        self.table.column("2", width=130, minwidth=50, stretch=tk.NO)
-        self.table.column("3", width=130, minwidth=50, stretch=tk.NO)
-        self.table.column("4", width=130, minwidth=50, stretch=tk.NO)
+        self.table.column("1", width=60, minwidth=40, stretch=tk.NO)
+        self.table.column("2", width=100, minwidth=50, stretch=tk.NO)
+        self.table.column("3", width=100, minwidth=50, stretch=tk.NO)
+        self.table.column("4", width=80, minwidth=50, stretch=tk.NO)
         self.table.column("5", width=130, minwidth=50, stretch=tk.NO)
         self.table.heading("#0", text="Archivo")
         self.table.heading("1", text="Número")
