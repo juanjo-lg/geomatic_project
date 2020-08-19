@@ -22,20 +22,18 @@ class App(tk.Tk):
         # Listas provisionales de apoyo.
         self.splitters = ["espacio","tabulador","coma","punto y coma"]
         self.file_opened = []
-        self.item_to_show = []
+        self.item_to_calc = []
         self.config_root()
         self.config_frames()
         self.draw_note(self.fr_note)
         self.draw_canvas(self.fr_canvas)
-        # Label para la tabla de puntos.
-        # Si esta etiqueta, el canvas se come a la tabla.
-        self.lbl_table=tk.Label(self.fr_table,text="Puntos",width=90,
-            bg='gray38',fg="gray75")
-        self.lbl_table.pack()
         self.draw_table(self.fr_table)
+        self.draw_text(self.fr_text)
         # El evento de cerrar desde el aspa se conecta con la función cerrar.
         self.protocol("WM_DELETE_WINDOW", self.close)
         # Enlace de los eventos con los atajos.
+        self.bind('<Control-o>', self.open_file)
+        self.bind('<Control-e>', self.select_all)
         self.bind('<Control-d>', self.draw_points)
         self.bind('<Control-q>', self.close)  # Siempre funciona enlazado con la raiz.
 
@@ -45,17 +43,20 @@ class App(tk.Tk):
         self.screen_size = self.winfo_screenwidth(),self.winfo_screenheight()
         self.geometry("%dx%d+%d-%d" %
             (self.screen_size[0], self.screen_size[1]-70, -10, 30))
-        self.configure(background="gray60")
+        self.configure(background='gray60')
 
     def config_frames(self):
         # Configuración de los Frames de la App.
         self.fr_note = tk.Frame(width=self.screen_size[0//2])
         self.fr_canvas = tk.Frame(width=self.screen_size[0]//2)
         self.fr_table = tk.Frame(bg='gray38',width=self.screen_size[0]//2)
+        self.fr_text = tk.Frame(bg='white',width=self.screen_size[0]//2,
+            height=self.screen_size[1]//2)
         # Colocación de Frames.
         self.fr_note.pack(side=tk.TOP,fill=tk.Y)
         self.fr_canvas.pack(side=tk.RIGHT,fill=tk.BOTH,expand=True)
         self.fr_table.pack(side=tk.TOP,fill=tk.BOTH,expand=True)
+        self.fr_text.pack(side=tk.BOTTOM,fill=tk.BOTH)
 
     def draw_note(self,master):
         # Configuracion del Notebook con estilos de diseño.
@@ -78,7 +79,7 @@ class App(tk.Tk):
             width=int(self.screen_size[0]),
             height=int(self.screen_size[1]/12))
         # Funciones para crear distintas pestañas.
-        def file(event=None):
+        def file():
             self.fr_file = ttk.Frame(master,style='TFrame')
             # Botón para abrir archivos.
             # Imagen para botón "abrir".
@@ -163,7 +164,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_stat,text='Estadística',
                 compound=tk.TOP,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",command=self.empty_canvas,
+                width=80,bg="grey60",command=self.add_points,
                 relief=tk.FLAT)
             self.btn_stat.pack(side=tk.LEFT)
             # Botón para cerrar el programa.
@@ -254,6 +255,11 @@ class App(tk.Tk):
         self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
 
     def draw_table(self,master):
+        # Label para la tabla de puntos.
+        # Si esta etiqueta, el canvas se come a la tabla.
+        self.lbl_table=tk.Label(self.fr_table,text="Puntos",width=90,
+            bg='gray38',fg="gray75")
+        self.lbl_table.pack()
         # Creación de tabla para cargar los puntos.
         self.table = ttk.Treeview(master,height=1000)
         self.table.pack(fill=tk.BOTH,expand=True)
@@ -283,6 +289,11 @@ class App(tk.Tk):
         self.style.configure('Treeview',background="grey60",
             focuscolor=self.style.configure(".")["background"])
         """NO FUNCIONA FOCUSCOLOR EN ESTA OCASIÓN"""
+
+    def draw_text(self, master):
+        # Creación de caja de texto para mostrar información.
+        self.text = tk.Text(master,bg='gray60')
+        self.text.pack(padx=10,pady=10,fill = tk.BOTH,expand=True)
 
     def open_file(self,event=None):
         # Función para abrir fichero de puntos.
@@ -385,6 +396,15 @@ class App(tk.Tk):
         self.canvas.get_tk_widget().destroy()
         self.toolbar.destroy()
         self.draw_canvas(self.fr_canvas)
+
+    def add_points(self, event = None):
+        # Añade puntos al cuadro de texto.
+        if self.table.selection():
+            table_items = self.table.selection()
+            for item in table_items:
+                item_data=self.table.item(item,option="values")
+                self.item_to_calc.append(item_data)
+                self.text.insert(tk.END,str(item_data)+"\n")
 
     def show_info(self, event=None):
         mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
