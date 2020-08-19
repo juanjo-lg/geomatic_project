@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wen Aug 05 12:17:00 2020
+Created on Wen Aug 19 08:40:00 2020
 
 @author: Juanjo_LG
 """
 
-"""GUI para la aplicación de topografía para el TFG OOP (v.03)."""
+"""GUI para la aplicación de topografía para el TFG OOP (v.04)."""
 
 import textwrap # Módulo para dar formato a texto y quitarle la sangría.
 import os
 import tkinter as tk
+import numpy as np
 from tkinter import filedialog, messagebox, ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
@@ -23,16 +24,21 @@ class App(tk.Tk):
         self.file_opened = []
         self.item_to_show = []
         self.config_root()
-        #self.config_menu()
         self.config_frames()
         self.draw_note(self.fr_note)
-        self.draw_table(self.fr_table)
         self.draw_canvas(self.fr_canvas)
-
+        # Label para la tabla de puntos.
+        # Si esta etiqueta, el canvas se come a la tabla.
+        self.lbl_table=tk.Label(self.fr_table,text="Puntos",width=90,
+            bg='gray38',fg="gray75")
+        self.lbl_table.pack()
+        self.draw_table(self.fr_table)
         # El evento de cerrar desde el aspa se conecta con la función cerrar.
         self.protocol("WM_DELETE_WINDOW", self.close)
         # Enlace de los eventos con los atajos.
+        self.bind('<Control-d>', self.draw_points)
         self.bind('<Control-q>', self.close)  # Siempre funciona enlazado con la raiz.
+
     def config_root(self):
         # Configuración de ventana principal.
         self.title("TFG - Juan José Lorenzo Gutiérrez")
@@ -40,32 +46,12 @@ class App(tk.Tk):
         self.geometry("%dx%d+%d-%d" %
             (self.screen_size[0], self.screen_size[1]-70, -10, 30))
         self.configure(background="gray60")
-    def config_menu(self):
-        # Configuración de barra de menu.
-        # Creación de menu.
-        self.menubar = tk.Menu()
-        self.menu_file = tk.Menu(tearoff=0)
-        self.menu_calc = tk.Menu(tearoff=0)
-        self.menu_about = tk.Menu(tearoff=0)
-        # Casillas de menu.
-        self.menu_file.add_command(label="Abrir", accelerator="Ctrl+O",
-            command='')
-        self.menu_file.add_command(label="Salir", accelerator="Ctrl+Q",
-            command=self.close)
-        self.menu_calc.add_command(label="Transformation")
-        self.menu_about.add_command(label="Acerca de", command='')
-        # Cascadas de menu.
-        self.menubar.add_cascade(label="Archivo", menu=self.menu_file)
-        self.menubar.add_cascade(label="Cálculo", menu=self.menu_calc)
-        self.menubar.add_cascade(label="Info", menu=self.menu_about)
-        # Enlace del menu con root.
-        self.config(menu=self.menubar)
+
     def config_frames(self):
         # Configuración de los Frames de la App.
-        self.fr_canvas = tk.Frame(width=self.screen_size[0]/2)
-        self.fr_note = tk.Frame(width=self.screen_size[0])
-        self.fr_table = tk.Frame(bg='gray38',width=self.screen_size[0]/2,
-            height=self.screen_size[1]/4)
+        self.fr_note = tk.Frame(width=self.screen_size[0//2])
+        self.fr_canvas = tk.Frame(width=self.screen_size[0]//2)
+        self.fr_table = tk.Frame(bg='gray38',width=self.screen_size[0]//2)
         # Colocación de Frames.
         self.fr_note.pack(side=tk.TOP,fill=tk.Y)
         self.fr_canvas.pack(side=tk.RIGHT,fill=tk.BOTH,expand=True)
@@ -137,19 +123,39 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_db,text='DB',
                 compound=tk.TOP,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",command=self.draw_points,
+                width=80,bg="grey60",
                 relief=tk.FLAT)
             self.btn_db.pack(side=tk.LEFT)
+            # Botón para seleccionar todos los puntos.
+            # Imagen para botón "Seleccionar Todo".
+            self.img_select_all = tk.PhotoImage(file="images/select_all.png")
+            self.btn_select_all = tk.Button(
+                self.fr_file,image=self.img_select_all,text='Seleccionar todo',
+                compound=tk.TOP,command=self.select_all,
+                height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_select_all.pack(side=tk.LEFT)
             # Botón para filtrar puntos.
             # Imagen para botón "Filtrar".
             self.img_filter = tk.PhotoImage(file="images/filtrar.png")
             self.btn_filter = tk.Button(
                 self.fr_file,image=self.img_filter,text='Filtrar',
-                compound=tk.TOP,command=self.draw_all,
+                compound=tk.TOP,
                 height=int(self.screen_size[1]/12),
                 width=80,bg="grey60",
                 relief=tk.FLAT)
             self.btn_filter.pack(side=tk.LEFT)
+            # Botón para dibujar puntos.
+            # Imagen para botón "Dibujar".
+            self.img_draw = tk.PhotoImage(file="images/draw_one.png")
+            self.btn_draw = tk.Button(
+                self.fr_file,image=self.img_draw,text='Dibujar puntos',
+                compound=tk.TOP,command=self.draw_points,
+                height=int(self.screen_size[1]/12),
+                width=80,bg="grey60",
+                relief=tk.FLAT)
+            self.btn_draw.pack(side=tk.LEFT)
             # Botón para Cálculo de estadísticas.
             # Imagen para botón "Estadísticas".
             self.img_stat = tk.PhotoImage(file="images/estadistica.png")
@@ -157,7 +163,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_stat,text='Estadística',
                 compound=tk.TOP,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="grey60",command=self.empty_canvas,
                 relief=tk.FLAT)
             self.btn_stat.pack(side=tk.LEFT)
             # Botón para cerrar el programa.
@@ -228,10 +234,11 @@ class App(tk.Tk):
         calculus()
         info()
         self.notebook.pack(fill=tk.BOTH,expand=True)
+
     def draw_canvas(self,master):
         # Configuración de canvas.
         # Al cambiar el dpi se mueve al pasar el ratón por fuera del gráfico.
-        self.fig = Figure(figsize=(3,3), dpi=110)
+        self.fig = Figure(figsize=(3,3), dpi=80)
         self.ax = self.fig.add_subplot(1,1,1)
         self.ax.set_xlabel('Coordenadas X')
         self.ax.set_ylabel('Coordenadas Y')
@@ -241,14 +248,13 @@ class App(tk.Tk):
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
         self.toolbar = NavigationToolbar2Tk(self.canvas,master)
-        print(self.toolbar.toolitems)
+        # Muestra todas las herramientas de la barra del canvas.
+        # print(self.toolbar.toolitems)
         self.toolbar.update()
         self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
+
     def draw_table(self,master):
-        # Configuracioón de la tabla de puntos.
-        # Label para la tabla.
-        self.lbl_table = tk.Label(master,text="Puntos",bg='gray38',fg="gray75")
-        self.lbl_table.pack()
+        # Creación de tabla para cargar los puntos.
         self.table = ttk.Treeview(master,height=1000)
         self.table.pack(fill=tk.BOTH,expand=True)
         # Scrollbar para Treeview. Funciona solamente enlazándola al Frame.
@@ -277,13 +283,7 @@ class App(tk.Tk):
         self.style.configure('Treeview',background="grey60",
             focuscolor=self.style.configure(".")["background"])
         """NO FUNCIONA FOCUSCOLOR EN ESTA OCASIÓN"""
-    def show_info(self, event=None):
-        mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
-        'Mail: juanjolorenzogutierrez@gmail.com\n\n'\
-        'Proyecto desarrollado con Python 3x y Tkinter para el TFG del curso'\
-        ' de adaptación al Grado de Geomática y Topografía.\n\n'\
-        'Iconos obtenidos de:\n- Smashicons\n- Freepik\n- Google'
-        msgbox_info=messagebox.showinfo(title='Acerca de:',message=mess)
+
     def open_file(self,event=None):
         # Función para abrir fichero de puntos.
         self.file_name = filedialog.askopenfilename(defaultextension="*.*",
@@ -353,26 +353,48 @@ class App(tk.Tk):
                     pass # Habrá que implementar algo aquí.
                 messagebox.showerror(title="Error",
                     message="Ha habido un error al abrir el archivo.")
-    def draw_points(self, event=None):
-        # Función que dibuja los puntos con sus coordenadas en el canvas.
-        self.table_item = self.table.focus()
-        self.item_data = self.table.item(self.table_item,option="values")
-        self.ax.scatter(float(self.item_data[1]),float(self.item_data[2]))
-        self.canvas.draw()
-    def draw_all(self, event=None):
+
+    def select_all(self, event=None):
         # Forma de iterar entre todos los subelementos de un parent en Treeview.
         for children in self.table.get_children():
             child = self.table.get_children(children)
             self.table.selection_add(child)# Selecciona todos los items.
         table_items = self.table.selection()
-        """EUREKA!!!! AUNQUE HAY QUE DARLE UNA VUELTA DE TUERCA PORQUE TARDA
-        MUCHO EN DIBUJAR LOS PUNTOS."""
-        for item in table_items:
-            item_data=self.table.item(item,option="values")
-            # print(item_data)
-            self.ax.plot(float(item_data[1]),float(item_data[2]),
-            color="black",marker=".")
+        return table_items
+
+    def draw_points(self, event= None):
+        # Dibuja los puntos seleccionados en la tabla.
+        if self.table.selection():
+            table_items = self.table.selection()
+            x_list = []
+            y_list = []
+            for item in table_items:
+                item_data=self.table.item(item,option="values")
+                x_list.append(float(item_data[1]))
+                y_list.append(float(item_data[2]))
+                #print(item_data)
+                #array.append([float(item_data[1]),float(item_data[2])])
+                """self.ax.plot(float(item_data[1]),float(item_data[2]),
+                color="black",marker=".")
+                self.canvas.draw()"""
+            self.ax.scatter(x_list,y_list,marker=".")
             self.canvas.draw()
+
+    def empty_canvas(self, event = None):
+        # Destrucción y redibujaddo del canvas.
+        self.canvas.get_tk_widget().destroy()
+        self.toolbar.destroy()
+        self.draw_canvas(self.fr_canvas)
+
+    def show_info(self, event=None):
+        mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
+        'Mail: juanjolorenzogutierrez@gmail.com\n\n'\
+        'Proyecto desarrollado con Python 3x y Tkinter para el TFG del curso'\
+        ' de adaptación al Grado de Geomática y Topografía.\n\n'\
+        'Iconos obtenidos de:\n- Smashicons\n- Freepik\n- Google\n'\
+        '- Kiranshastry'
+        msgbox_info=messagebox.showinfo(title='Acerca de:',message=mess)
+
     def close(self, event=None):
         # Función para cerrar el programa.
         mess = "¿Está seguro de que quiere salir del programa?"
