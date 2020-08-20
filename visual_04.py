@@ -50,7 +50,7 @@ class App(tk.Tk):
         self.fr_note = tk.Frame(width=self.screen_size[0//2])
         self.fr_canvas = tk.Frame(width=self.screen_size[0]//2)
         self.fr_table = tk.Frame(bg='gray38',width=self.screen_size[0]//2)
-        self.fr_text = tk.Frame(bg='white',width=self.screen_size[0]//2,
+        self.fr_text = tk.Frame(bg='gray60',width=self.screen_size[0]//2,
             height=self.screen_size[1]//2)
         # Colocación de Frames.
         self.fr_note.pack(side=tk.TOP,fill=tk.Y)
@@ -114,7 +114,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_save,text='Guardar',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
                 width=80,bg="grey60",
-                command=lambda:print(type(self.notebook.tabs())),
+                command=lambda:print(self.notebook.tabs()),
                 relief=tk.FLAT)
             self.btn_save.pack(side=tk.LEFT)
             # Botón para abrir base de datos.
@@ -271,12 +271,17 @@ class App(tk.Tk):
         self.table.configure(yscrollcommand=self.scroll_tree.set)
         # Inserción de campos en la tabla.
         self.table["columns"] = ("1", "2", "3", "4", "5")
-        self.table.column("#0", width=150, minwidth=100, stretch=tk.NO)
-        self.table.column("1", width=60, minwidth=40, stretch=tk.NO)
-        self.table.column("2", width=100, minwidth=50, stretch=tk.NO)
-        self.table.column("3", width=100, minwidth=50, stretch=tk.NO)
-        self.table.column("4", width=80, minwidth=50, stretch=tk.NO)
-        self.table.column("5", width=130, minwidth=50, stretch=tk.NO)
+        self.table.column("#0",width=170,minwidth=100,stretch=tk.NO)
+        self.table.column("1",width=60,minwidth=40,
+            stretch=tk.NO,anchor=tk.CENTER)
+        self.table.column("2",width=110,minwidth=50,
+            stretch=tk.NO,anchor=tk.CENTER)
+        self.table.column("3",width=110,minwidth=50,
+            stretch=tk.NO,anchor=tk.CENTER)
+        self.table.column("4",width=90,minwidth=50,
+            stretch=tk.NO,anchor=tk.CENTER)
+        self.table.column("5",width=110,minwidth=50,
+            stretch=tk.NO,anchor=tk.CENTER)
         self.table.heading("#0", text="Archivo")
         self.table.heading("1", text="Número")
         self.table.heading("2", text="X")
@@ -293,7 +298,16 @@ class App(tk.Tk):
     def draw_text(self, master):
         # Creación de caja de texto para mostrar información.
         self.text = tk.Text(master,bg='gray60')
-        self.text.pack(padx=10,pady=10,fill = tk.BOTH,expand=True)
+        self.text.pack(padx=5,pady=5,fill = tk.BOTH,
+            expand=True)
+        # Botón para añadir puntos de forma manual al texto.
+        self.btn_add = tk.Button(master,text='Añadir Punto',
+            bg="grey60",relief=tk.FLAT,command=self.add_manual_txt)
+        self.btn_clean = tk.Button(master,text='Borrar',
+            command=self.remove_text,bg="grey60",relief=tk.FLAT)
+
+        self.btn_add.pack(padx=5,pady=5,side=tk.LEFT)
+        self.btn_clean.pack(padx=5,pady=5,side=tk.LEFT)
 
     def open_file(self,event=None):
         # Función para abrir fichero de puntos.
@@ -370,8 +384,9 @@ class App(tk.Tk):
         for children in self.table.get_children():
             child = self.table.get_children(children)
             self.table.selection_add(child)# Selecciona todos los items.
+        # Elimina el nombre del archivo de la selección.
+        self.table.selection_remove(children)
         table_items = self.table.selection()
-        return table_items
 
     def draw_points(self, event= None):
         # Dibuja los puntos seleccionados en la tabla.
@@ -402,9 +417,62 @@ class App(tk.Tk):
         if self.table.selection():
             table_items = self.table.selection()
             for item in table_items:
-                item_data=self.table.item(item,option="values")
+                item_data=str(self.table.item(item,option="values"))
+                # Forma de borrar comillas y paréntesis.
+                item_data=item_data.translate({ord(i):None for i in "'()"})
                 self.item_to_calc.append(item_data)
-                self.text.insert(tk.END,str(item_data)+"\n")
+                self.text.insert(tk.END,item_data+"\n")
+
+    def add_manual_txt(self, event = None):
+        # Toplevel para inserción de puntos de forma manual.
+        self.top_manual = tk.Toplevel(self)
+        # Etiquetas del Toplevel
+        self.lbl_top_n = tk.Label(self.top_manual,text='Número')
+        self.lbl_top_x = tk.Label(self.top_manual,text='X')
+        self.lbl_top_y = tk.Label(self.top_manual,text='Y')
+        self.lbl_top_z = tk.Label(self.top_manual,text='Z')
+        self.lbl_top_cod = tk.Label(self.top_manual,text='Código')
+        # Entries del Toplevel.
+        self.ntr_top_n = tk.Entry(self.top_manual)
+        self.ntr_top_x = tk.Entry(self.top_manual)
+        self.ntr_top_y = tk.Entry(self.top_manual)
+        self.ntr_top_z = tk.Entry(self.top_manual)
+        self.ntr_top_cod = tk.Entry(self.top_manual)
+        # Botones del Toplevel.
+        self.btn_top_ins = tk.Button(self.top_manual,text='Insertar',
+            relief=tk.FLAT)
+        self.btn_top_clear = tk.Button(self.top_manual,text='Borrar',
+            relief=tk.FLAT)
+        self.btn_top_close = tk.Button(self.top_manual,text='Cerrar',
+            command=lambda:self.top_manual.destroy(),relief=tk.FLAT)
+
+        self.lbl_top_n.grid(column=0,row=0)
+        self.lbl_top_x.grid(column=1,row=0)
+        self.lbl_top_y.grid(column=2,row=0)
+        self.lbl_top_z.grid(column=3,row=0)
+        self.lbl_top_cod.grid(column=4,row=0)
+        self.ntr_top_n.grid(column=0,row=1)
+        self.ntr_top_x.grid(column=1,row=1)
+        self.ntr_top_y.grid(column=2,row=1)
+        self.ntr_top_z.grid(column=3,row=1)
+        self.ntr_top_cod.grid(column=4,row=1)
+        # Separador entre las Entries y los botones.
+        ttk.Separator(self.top_manual,orient=tk.HORIZONTAL
+            ).grid(column=0,row=2,columnspan=5,sticky="ew")
+
+        self.btn_top_ins.grid(column=1,row=3,sticky=tk.N+tk.S+tk.E+tk.W)
+        self.btn_top_clear.grid(column=2,row=3,sticky=tk.N+tk.S+tk.E+tk.W)
+        self.btn_top_close.grid(column=3,row=3,sticky=tk.N+tk.S+tk.E+tk.W)
+
+        self.top_manual.resizable(False,False)
+
+    def remove_table(self, event = None):
+        # Limpieza de la tabla.
+        self.table.selection_remove(self.select_all())
+
+    def remove_text(self, event = None):
+        # Limpieza del cuadro de texto.
+        self.text.delete('1.0',tk.END)
 
     def show_info(self, event=None):
         mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
