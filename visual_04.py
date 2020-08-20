@@ -241,6 +241,9 @@ class App(tk.Tk):
         # Al cambiar el dpi se mueve al pasar el ratón por fuera del gráfico.
         self.fig = Figure(figsize=(3,3), dpi=80)
         self.ax = self.fig.add_subplot(1,1,1)
+        # Esto hace que los ejes se ajusten de alguna forma con la escala.
+        """HAY QUE DARLE OTRA VUELTA DE TUERCA XQ NO FUNCIONA BIEN"""
+        self.ax.set_adjustable('box', share=True)
         self.ax.set_xlabel('Coordenadas X')
         self.ax.set_ylabel('Coordenadas Y')
         """Quito las coordenadas para que no me reescalen la figura."""
@@ -424,8 +427,35 @@ class App(tk.Tk):
                 self.text.insert(tk.END,item_data+"\n")
 
     def add_manual_txt(self, event = None):
+        # Ventana emergente para insertar puntos de forma manual.
+        def ntr_clean(event = None):
+            # Limpia los Entries.
+            for i in self.top_manual.children.values():
+                if type(i) == tk.Entry:
+                    i.delete(0,tk.END)
+        def ntr_insert(event = None):
+            # Inserta el punto en el Treeview y en el cuadro de texto.
+            line = []
+            count = 0
+            # En caso de que 'Manual' no exista, lo crea en la tabla.
+            if 'Manual' not in self.file_opened:
+                # Se añade 'Manual' a la lista de ficheros abiertos.
+                self.file_opened.append('Manual')
+                self.manual = self.table.insert("", 1, text='Manual')
+            # Recorre los elementos hijos de Toplevel.
+            for i in self.top_manual.children.values():
+                # En caso de ser Entries, recupera los valores.
+                if type(i) == tk.Entry:
+                    line.append(i.get())
+                    count += 1
+            # Se insertan los valores en la tabla.
+            self.table.insert(self.manual,count,values=(
+                line[0],line[1],line[2],line[3],line[4]))
+            ntr_clean()
+
         # Toplevel para inserción de puntos de forma manual.
         self.top_manual = tk.Toplevel(self)
+        self.top_manual.title('Inserción manual de puntos.')
         # Etiquetas del Toplevel
         self.lbl_top_n = tk.Label(self.top_manual,text='Número')
         self.lbl_top_x = tk.Label(self.top_manual,text='X')
@@ -440,9 +470,9 @@ class App(tk.Tk):
         self.ntr_top_cod = tk.Entry(self.top_manual)
         # Botones del Toplevel.
         self.btn_top_ins = tk.Button(self.top_manual,text='Insertar',
-            relief=tk.FLAT)
+            command=ntr_insert,relief=tk.FLAT)
         self.btn_top_clear = tk.Button(self.top_manual,text='Borrar',
-            relief=tk.FLAT)
+            command=ntr_clean,relief=tk.FLAT)
         self.btn_top_close = tk.Button(self.top_manual,text='Cerrar',
             command=lambda:self.top_manual.destroy(),relief=tk.FLAT)
 
