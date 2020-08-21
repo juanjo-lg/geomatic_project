@@ -87,7 +87,7 @@ class App(tk.Tk):
             self.btn_open = tk.Button(
                 self.fr_file,image=self.img_open,text='Abrir',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",command=self.open_file,
+                width=80,bg="gray60",command=self.open_file,
                 relief=tk.FLAT)
             self.btn_open.pack(side=tk.LEFT)
             # Frame para separadores.
@@ -113,7 +113,7 @@ class App(tk.Tk):
             self.btn_save = tk.Button(
                 self.fr_file,image=self.img_save,text='Guardar',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 command=lambda:print(self.notebook.tabs()),
                 relief=tk.FLAT)
             self.btn_save.pack(side=tk.LEFT)
@@ -124,7 +124,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_db,text='DB',
                 compound=tk.TOP,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_db.pack(side=tk.LEFT)
             # Botón para seleccionar todos los puntos.
@@ -134,7 +134,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_select_all,text='Seleccionar todo',
                 compound=tk.TOP,command=self.select_all,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_select_all.pack(side=tk.LEFT)
             # Botón para filtrar puntos.
@@ -142,9 +142,9 @@ class App(tk.Tk):
             self.img_filter = tk.PhotoImage(file="images/filtrar.png")
             self.btn_filter = tk.Button(
                 self.fr_file,image=self.img_filter,text='Filtrar',
-                compound=tk.TOP,
+                compound=tk.TOP,command=self.filter,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_filter.pack(side=tk.LEFT)
             # Botón para dibujar puntos.
@@ -154,7 +154,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_draw,text='Dibujar puntos',
                 compound=tk.TOP,command=self.draw_points,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_draw.pack(side=tk.LEFT)
             # Botón para Cálculo de estadísticas.
@@ -164,7 +164,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_stat,text='Estadística',
                 compound=tk.TOP,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",command=self.add_points,
+                width=80,bg="gray60",command=self.add_points,
                 relief=tk.FLAT)
             self.btn_stat.pack(side=tk.LEFT)
             # Botón para cerrar el programa.
@@ -174,7 +174,7 @@ class App(tk.Tk):
                 self.fr_file,image=self.img_close,text='Cerrar',
                 compound=tk.TOP,command=self.close,
                 height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_close.pack(side=tk.RIGHT)
             self.notebook.add(self.fr_file,text="Archivo")
@@ -186,7 +186,7 @@ class App(tk.Tk):
             self.btn_dist_azim = tk.Button(
                 self.fr_calc,image=self.img_dist_azim,text='Dist & Azim',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_dist_azim.pack(side=tk.LEFT)
             # Botón de transformación.
@@ -195,7 +195,7 @@ class App(tk.Tk):
             self.btn_trans = tk.Button(
                 self.fr_calc,image=self.img_trans,text='Transformación',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_trans.pack(side=tk.LEFT)
             self.notebook.add(self.fr_calc,text="Cálculos")
@@ -205,7 +205,7 @@ class App(tk.Tk):
             self.btn_inter = tk.Button(
                 self.fr_calc,image=self.img_inter,text='Intersección',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_inter.pack(side=tk.LEFT)
             self.notebook.add(self.fr_calc,text="Cálculos")
@@ -215,7 +215,7 @@ class App(tk.Tk):
             self.btn_polig = tk.Button(
                 self.fr_calc,image=self.img_polig,text='Itinerario',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",
+                width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_polig.pack(side=tk.LEFT)
         def info():
@@ -226,7 +226,7 @@ class App(tk.Tk):
             self.btn_info = tk.Button(
                 self.fr_info,image=self.img_info,text='Información',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="grey60",command=self.show_info,
+                width=80,bg="gray60",command=self.show_info,
                 relief=tk.FLAT)
             self.btn_info.pack(side=tk.LEFT)
             self.notebook.add(self.fr_info,text="Información")
@@ -252,6 +252,10 @@ class App(tk.Tk):
         self.canvas.draw()
         self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
         self.toolbar = NavigationToolbar2Tk(self.canvas,master)
+        self.img_clear = tk.PhotoImage(file="images/borrar24.png")
+        self.btn_clear_canvas = tk.Button(self.toolbar,
+            command=self.empty_canvas,image=self.img_clear)
+        self.btn_clear_canvas.pack(side=tk.LEFT,fill=tk.Y)
         # Muestra todas las herramientas de la barra del canvas.
         # print(self.toolbar.toolitems)
         self.toolbar.update()
@@ -294,7 +298,7 @@ class App(tk.Tk):
         # Configuración de estilo del Treeview.
         self.style.configure('Treeview.Heading',
             relief=tk.FLAT,background="gray75")
-        self.style.configure('Treeview',background="grey60",
+        self.style.configure('Treeview',background="gray60",
             focuscolor=self.style.configure(".")["background"])
         """NO FUNCIONA FOCUSCOLOR EN ESTA OCASIÓN"""
 
@@ -305,9 +309,9 @@ class App(tk.Tk):
             expand=True)
         # Botón para añadir puntos de forma manual al texto.
         self.btn_add = tk.Button(master,text='Añadir Punto',
-            bg="grey60",relief=tk.FLAT,command=self.add_manual_txt)
+            bg="gray60",relief=tk.FLAT,command=self.add_manual_txt)
         self.btn_clean = tk.Button(master,text='Borrar',
-            command=self.remove_text,bg="grey60",relief=tk.FLAT)
+            command=self.remove_text,bg="gray60",relief=tk.FLAT)
 
         self.btn_add.pack(padx=5,pady=5,side=tk.LEFT)
         self.btn_clean.pack(padx=5,pady=5,side=tk.LEFT)
@@ -391,6 +395,39 @@ class App(tk.Tk):
         self.table.selection_remove(children)
         table_items = self.table.selection()
 
+    def filter(self, event=None):
+        # Función para filtrar puntos según su código en el Treeview.
+        def lbl_ntr_btn_top(master):
+            # Función para colocar los elementos en la Toplevel de filtrado.
+            lbl_filter = tk.Label(master,text='Código a filtrar:',bg="gray75")
+            self.ntr_filter = tk.Entry(master)
+            btn_filter = tk.Button(master,text='Filtrar',bg="gray60",
+                command=command_btn_filter)
+            lbl_filter.pack(pady=5)
+            self.ntr_filter.pack(padx=10)
+            btn_filter.pack(pady=5)
+
+        def command_btn_filter():
+            # Función de filtrado.
+            filter = self.ntr_filter.get()
+            for children in self.table.get_children():
+                child = self.table.get_children(children)
+                for item in child:
+                    item_data = self.table.item(item,option="values")
+                    if filter in item_data:
+                        self.table.selection_add(item)
+            self.table.selection_remove(children)
+
+        # En caso de tener abierto algún archivo, se abre una Toplevel.
+        if self.table.get_children():
+            # Toplevel para filtrado de puntos.
+            self.top_filter = tk.Toplevel(self)
+            self.top_filter.geometry("%dx%d" % (300,85))
+            self.top_filter.configure(background="gray75")
+            self.top_filter.title('Filtrado de puntos.')
+            self.top_filter.resizable(False,False)
+            lbl_ntr_btn_top(self.top_filter)
+
     def draw_points(self, event= None):
         # Dibuja los puntos seleccionados en la tabla.
         if self.table.selection():
@@ -398,7 +435,7 @@ class App(tk.Tk):
             x_list = []
             y_list = []
             for item in table_items:
-                item_data=self.table.item(item,option="values")
+                item_data = self.table.item(item,option="values")
                 x_list.append(float(item_data[1]))
                 y_list.append(float(item_data[2]))
                 #print(item_data)
@@ -456,12 +493,13 @@ class App(tk.Tk):
         # Toplevel para inserción de puntos de forma manual.
         self.top_manual = tk.Toplevel(self)
         self.top_manual.title('Inserción manual de puntos.')
+        self.top_manual.configure(background="gray75")
         # Etiquetas del Toplevel
-        self.lbl_top_n = tk.Label(self.top_manual,text='Número')
-        self.lbl_top_x = tk.Label(self.top_manual,text='X')
-        self.lbl_top_y = tk.Label(self.top_manual,text='Y')
-        self.lbl_top_z = tk.Label(self.top_manual,text='Z')
-        self.lbl_top_cod = tk.Label(self.top_manual,text='Código')
+        self.lbl_top_n = tk.Label(self.top_manual,text='Número',bg="gray75")
+        self.lbl_top_x = tk.Label(self.top_manual,text='X',bg="gray75")
+        self.lbl_top_y = tk.Label(self.top_manual,text='Y',bg="gray75")
+        self.lbl_top_z = tk.Label(self.top_manual,text='Z',bg="gray75")
+        self.lbl_top_cod = tk.Label(self.top_manual,text='Código',bg="gray75")
         # Entries del Toplevel.
         self.ntr_top_n = tk.Entry(self.top_manual)
         self.ntr_top_x = tk.Entry(self.top_manual)
@@ -470,11 +508,11 @@ class App(tk.Tk):
         self.ntr_top_cod = tk.Entry(self.top_manual)
         # Botones del Toplevel.
         self.btn_top_ins = tk.Button(self.top_manual,text='Insertar',
-            command=ntr_insert,relief=tk.FLAT)
+            command=ntr_insert,relief=tk.FLAT,bg="gray60")
         self.btn_top_clear = tk.Button(self.top_manual,text='Borrar',
-            command=ntr_clean,relief=tk.FLAT)
+            command=ntr_clean,relief=tk.FLAT,bg="gray60")
         self.btn_top_close = tk.Button(self.top_manual,text='Cerrar',
-            command=lambda:self.top_manual.destroy(),relief=tk.FLAT)
+            command=lambda:self.top_manual.destroy(),relief=tk.FLAT,bg="gray60")
 
         self.lbl_top_n.grid(column=0,row=0)
         self.lbl_top_x.grid(column=1,row=0)
@@ -510,7 +548,7 @@ class App(tk.Tk):
         'Proyecto desarrollado con Python 3x y Tkinter para el TFG del curso'\
         ' de adaptación al Grado de Geomática y Topografía.\n\n'\
         'Iconos obtenidos de:\n- Smashicons\n- Freepik\n- Google\n'\
-        '- Kiranshastry'
+        '- Kiranshastry\n- Gregor Cresnar'
         msgbox_info=messagebox.showinfo(title='Acerca de:',message=mess)
 
     def close(self, event=None):
