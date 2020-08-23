@@ -34,8 +34,13 @@ class App(tk.Tk):
         # Enlace de los eventos con los atajos.
         self.bind('<Control-o>', self.open_file)
         self.bind('<Control-e>', self.select_all)
+        self.bind('<Control-f>', self.filter)
         self.bind('<Control-d>', self.draw_points)
-        self.bind('<Control-q>', self.close)  # Siempre funciona enlazado con la raiz.
+        self.bind('<Control-i>', self.add_manual_txt)
+        self.table.bind('<Escape>', self.deselect_all)
+        self.table.bind('<Button-3>',self.popup_table)
+        # Siempre funciona enlazado con la raiz.
+        self.bind('<Control-q>', self.close) 
 
     def config_root(self):
         # Configuración de ventana principal.
@@ -316,6 +321,26 @@ class App(tk.Tk):
         self.btn_add.pack(padx=5,pady=5,side=tk.LEFT)
         self.btn_clean.pack(padx=5,pady=5,side=tk.LEFT)
 
+    def popup_table(self,event=None):
+        # Menú para ejecutar en el Treeview al pulsar con el botón derecho.
+        self.popup_menu_table = tk.Menu(self.table, tearoff=0)
+        self.popup_menu_table.add_command(label='Abrir fichero',
+            accelerator="Ctrl+O",command=self.open_file)
+        self.popup_menu_table.add_separator()
+        self.popup_menu_table.add_command(label='Seleccionar todos',
+            accelerator="Ctrl+E",command=self.select_all)
+        self.popup_menu_table.add_command(label='Deseleccionar todos',
+            command=self.deselect_all)
+        self.popup_menu_table.add_separator()
+        self.popup_menu_table.add_command(label='Insertar punto',
+            accelerator="Ctrl+I",command=self.add_manual_txt)
+        self.popup_menu_table.add_separator()
+        self.popup_menu_table.add_command(label='Cerrar',
+            accelerator="Ctrl+Q",command=self.close)
+        # Se muestra en las coordenadas en las que se encuentra el ratón.
+        self.popup_menu_table.tk_popup(event.x_root,event.y_root)
+        self.popup_menu_table.grab_release()
+
     def open_file(self,event=None):
         # Función para abrir fichero de puntos.
         self.file_name = filedialog.askopenfilename(defaultextension="*.*",
@@ -395,6 +420,10 @@ class App(tk.Tk):
         self.table.selection_remove(children)
         table_items = self.table.selection()
 
+    def deselect_all(self, event=None):
+        # Deselecciona los items que estén seleccionados.
+        self.table.selection_remove(self.table.selection())
+
     def filter(self, event=None):
         # Función para filtrar puntos según su código en el Treeview.
         def lbl_ntr_btn_top(master):
@@ -410,13 +439,16 @@ class App(tk.Tk):
         def command_btn_filter():
             # Función de filtrado.
             filter = self.ntr_filter.get()
+            self.deselect_all()
             for children in self.table.get_children():
                 child = self.table.get_children(children)
                 for item in child:
                     item_data = self.table.item(item,option="values")
-                    if filter in item_data:
+                    # Se busca la coincidencia en minúsculas.
+                    if filter.lower() in item_data[4].lower():
                         self.table.selection_add(item)
             self.table.selection_remove(children)
+            self.top_filter.destroy()
 
         # En caso de tener abierto algún archivo, se abre una Toplevel.
         if self.table.get_children():
@@ -427,6 +459,7 @@ class App(tk.Tk):
             self.top_filter.title('Filtrado de puntos.')
             self.top_filter.resizable(False,False)
             lbl_ntr_btn_top(self.top_filter)
+            self.ntr_filter.focus()
 
     def draw_points(self, event= None):
         # Dibuja los puntos seleccionados en la tabla.
