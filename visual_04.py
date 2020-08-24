@@ -326,6 +326,10 @@ class App(tk.Tk):
         self.popup_menu_table = tk.Menu(self.table, tearoff=0)
         self.popup_menu_table.add_command(label='Abrir fichero',
             accelerator="Ctrl+O",command=self.open_file)
+        self.popup_menu_table.add_command(label='Cerrar fichero',
+            accelerator="",command=self.remove_file)
+        self.popup_menu_table.add_command(label='Cerrar ficheros',
+            accelerator="Ctrl+R",command=self.remove_table)
         self.popup_menu_table.add_separator()
         self.popup_menu_table.add_command(label='Filtrar',
             accelerator="Ctrl+F",command=self.filter)
@@ -575,9 +579,18 @@ class App(tk.Tk):
 
         self.top_manual.resizable(False,False)
 
+    def remove_file(self, event = None):
+        # Borrado de ficheros seleccionados.
+        if self.table.selection() is not None:
+            files_to_remove = self.table.selection()
+            self.table.delete(files_to_remove)
+
     def remove_table(self, event = None):
         # Limpieza de la tabla.
-        self.table.selection_remove(self.select_all())
+        for item in self.table.get_children():
+            self.table.delete(item)
+        # Permite que se puedan volver a abrir los archivos borrados.
+        self.file_opened = []
 
     def remove_text(self, event = None):
         # Limpieza del cuadro de texto.
@@ -594,8 +607,8 @@ class App(tk.Tk):
                 table_points.append(point)
             self.cmb_dist_azim = ttk.Combobox(self.top_dist_azim,
                 values=[(i.num,i.coord) for i in table_points],
-                justify=tk.CENTER,state="readonly")
-            self.cmb_dist_azim.pack(expand=True)
+                justify=tk.CENTER,state="readonly",width=40)
+            self.cmb_dist_azim.pack()
 
         # En caso de tener abierto algún archivo, se abre una Toplevel.
         if self.table.selection():
