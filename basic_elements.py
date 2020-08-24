@@ -29,7 +29,7 @@ class Point:
         else:
             self.cod = "Por defecto"
         #Mensaje de creación de cada instancia.
-        print("Creación de punto con coordenadas: %s" % (self.coord))
+        """print("Creación de punto con coordenadas: %s" % (self.coord))"""
 
     #Getter para obtener coordenadas.
     def get_coord(self, coord):
@@ -121,14 +121,15 @@ class Polygonal:
     def __init__(self):
         pass
 
+
 """Pruebas"""
-print("-------------------------")
+"""print("-------------------------")
 print("PRUEBAS DE FUNCIONAMIENTO")
 print("-------------------------")
 inicio = time.time()
 p1 = Point(-1, 1, 0, cod = "Arbol")
 p2 = Point(1, 1, 0)
-p3 = Point(2, 2, 2)
+p3 = Point(2, 2, 2)"""
 """print("Dinstancia entre dos puntos con el método del punto: %s" %
     (p1.distance(p2.coord)))
 print("Dinstancia entre dos puntos con np.linalg: %s" %
@@ -136,7 +137,7 @@ print("Dinstancia entre dos puntos con np.linalg: %s" %
 print("azimut del punto 1: %s" % (p1.azimut([-2,2,0])))
 print(p1.cod)
 print(p2.coord[1])"""
-azim_p1_p2 = Azimut(p1,p2)
+"""azim_p1_p2 = Azimut(p1,p2)
 print(Azimut(p1,p2))
 ang_1 = Angle(540, ang_mes="deg")
 print(ang_1.angle)
@@ -145,4 +146,4 @@ p1.set_coord("x", 100)
 p1.get_coord("y")
 fin = time.time()
 dif_time = fin - inicio
-print(dif_time)
+print(dif_time)"""

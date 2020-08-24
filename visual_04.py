@@ -11,6 +11,7 @@ import textwrap # Módulo para dar formato a texto y quitarle la sangría.
 import os
 import tkinter as tk
 import numpy as np
+import basic_elements as be
 from tkinter import filedialog, messagebox, ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
@@ -40,7 +41,7 @@ class App(tk.Tk):
         self.table.bind('<Escape>', self.deselect_all)
         self.table.bind('<Button-3>',self.popup_table)
         # Siempre funciona enlazado con la raiz.
-        self.bind('<Control-q>', self.close) 
+        self.bind('<Control-q>', self.close)
 
     def config_root(self):
         # Configuración de ventana principal.
@@ -191,7 +192,7 @@ class App(tk.Tk):
             self.btn_dist_azim = tk.Button(
                 self.fr_calc,image=self.img_dist_azim,text='Dist & Azim',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="gray60",
+                command=self.dist_azim,width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_dist_azim.pack(side=tk.LEFT)
             # Botón de transformación.
@@ -246,9 +247,8 @@ class App(tk.Tk):
         # Al cambiar el dpi se mueve al pasar el ratón por fuera del gráfico.
         self.fig = Figure(figsize=(3,3), dpi=80)
         self.ax = self.fig.add_subplot(1,1,1)
-        # Esto hace que los ejes se ajusten de alguna forma con la escala.
-        """HAY QUE DARLE OTRA VUELTA DE TUERCA XQ NO FUNCIONA BIEN"""
-        self.ax.set_adjustable('box', share=True)
+        # Iguala la escala de los ejes x e y y ajusta la caja a los límites.
+        self.ax.set_aspect('equal',adjustable='datalim')
         self.ax.set_xlabel('Coordenadas X')
         self.ax.set_ylabel('Coordenadas Y')
         """Quito las coordenadas para que no me reescalen la figura."""
@@ -327,13 +327,18 @@ class App(tk.Tk):
         self.popup_menu_table.add_command(label='Abrir fichero',
             accelerator="Ctrl+O",command=self.open_file)
         self.popup_menu_table.add_separator()
+        self.popup_menu_table.add_command(label='Filtrar',
+            accelerator="Ctrl+F",command=self.filter)
         self.popup_menu_table.add_command(label='Seleccionar todos',
             accelerator="Ctrl+E",command=self.select_all)
         self.popup_menu_table.add_command(label='Deseleccionar todos',
-            command=self.deselect_all)
+            accelerator="Esc",command=self.deselect_all)
         self.popup_menu_table.add_separator()
         self.popup_menu_table.add_command(label='Insertar punto',
             accelerator="Ctrl+I",command=self.add_manual_txt)
+        self.popup_menu_table.add_separator()
+        self.popup_menu_table.add_command(label='Dibujar puntos',
+            accelerator="Ctrl+D",command=self.draw_points)
         self.popup_menu_table.add_separator()
         self.popup_menu_table.add_command(label='Cerrar',
             accelerator="Ctrl+Q",command=self.close)
@@ -518,6 +523,9 @@ class App(tk.Tk):
                 if type(i) == tk.Entry:
                     line.append(i.get())
                     count += 1
+            # Si no se introduce un código, se le asigna 'Por defecto'.
+            if line[4] == "":
+                line[4] = 'Por defecto'
             # Se insertan los valores en la tabla.
             self.table.insert(self.manual,count,values=(
                 line[0],line[1],line[2],line[3],line[4]))
@@ -574,6 +582,29 @@ class App(tk.Tk):
     def remove_text(self, event = None):
         # Limpieza del cuadro de texto.
         self.text.delete('1.0',tk.END)
+
+    def dist_azim(self, event = None):
+        # Función para el cálculo de la distancia y azimut entre 2 puntos.
+        def cmbox_dist_azim():
+            table_points = []
+            table_items = self.table.selection()
+            for item in table_items:
+                item_data = self.table.item(item,option="values")
+                point = be.Point(item_data[1],item_data[2],n=item_data[0])
+                table_points.append(point)
+            self.cmb_dist_azim = ttk.Combobox(self.top_dist_azim,
+                values=[(i.num,i.coord) for i in table_points],
+                justify=tk.CENTER,state="readonly")
+            self.cmb_dist_azim.pack(expand=True)
+
+        # En caso de tener abierto algún archivo, se abre una Toplevel.
+        if self.table.selection():
+            self.top_dist_azim = tk.Toplevel(self)
+            self.top_dist_azim.geometry("%dx%d" % (300,85))
+            self.top_dist_azim.configure(background="gray75")
+            self.top_dist_azim.title('Introduzca los puntos a calcular')
+            #self.top_dist_azim.resizable(False,False)
+            cmbox_dist_azim()
 
     def show_info(self, event=None):
         mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
