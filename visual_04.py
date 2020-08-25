@@ -397,13 +397,9 @@ class App(tk.Tk):
                             self.table.insert(self.file_no_path,count,values=(
                                 line[0],line[1],line[2],line[3],line[4]))
 
-                            x_sum += float(line[1])
-                            y_sum += float(line[2])
                             #Posible fallo en count, podría ser count-1
-                            #No funciona bien, hay que arreglarlo para añadir la media al final de la lista
                             count += 1
-                        self.file_opened.append((x_sum/count, y_sum/count))
-                        print(self.file_opened[0])
+                        print(self.file_opened)
                 else:
                     messagebox.showerror(title="Error",
                         message="El archivo ya se encuentra abierto.")
@@ -583,22 +579,43 @@ class App(tk.Tk):
         # Borrado de ficheros seleccionados.
         if self.table.selection() is not None:
             files_to_remove = self.table.selection()
-            self.table.delete(files_to_remove)
+            for i in files_to_remove:
+                try:
+                    # Se encuentra el padre del item seleccionado y su nombre.
+                    parent = self.table.parent(i)
+                    file_name = self.table.item(parent,'text')
+                    for j in self.file_opened:
+                        if file_name in j:
+                            # Se borra el fichero de la lista de "Abiertos".
+                            self.file_opened.remove(j)
+                    # Borrado del fichero con los puntos del Treeview.
+                    self.table.delete(self.table.parent(i))
+                except: pass
 
-    def remove_table(self, event = None):
+    def remove_table(self, file = None, event = None):
         # Limpieza de la tabla.
         for item in self.table.get_children():
             self.table.delete(item)
         # Permite que se puedan volver a abrir los archivos borrados.
-        self.file_opened = []
-
+        if file == None:
+            self.file_opened.clear()
+        else:
+            self.file_opened.remove(file)
     def remove_text(self, event = None):
         # Limpieza del cuadro de texto.
         self.text.delete('1.0',tk.END)
 
     def dist_azim(self, event = None):
         # Función para el cálculo de la distancia y azimut entre 2 puntos.
+        def lbl_dist_azim():
+            var = tk.StringVar()
+            var.set("Introduzca punto desde donde se visa.")
+            lbl_d_a = tk.Label(self.top_dist_azim,textvariable=var
+                ,bg="gray75")
+            lbl_d_a.pack()
+
         def cmbox_dist_azim():
+            # Combobox para seleccionar los puntos seleccionados en el Treeview
             table_points = []
             table_items = self.table.selection()
             for item in table_items:
@@ -606,7 +623,7 @@ class App(tk.Tk):
                 point = be.Point(item_data[1],item_data[2],n=item_data[0])
                 table_points.append(point)
             self.cmb_dist_azim = ttk.Combobox(self.top_dist_azim,
-                values=[(i.num,i.coord) for i in table_points],
+                values=[(i.num,str(i)) for i in table_points],
                 justify=tk.CENTER,state="readonly",width=40)
             self.cmb_dist_azim.pack()
 
@@ -617,6 +634,7 @@ class App(tk.Tk):
             self.top_dist_azim.configure(background="gray75")
             self.top_dist_azim.title('Introduzca los puntos a calcular')
             #self.top_dist_azim.resizable(False,False)
+            lbl_dist_azim()
             cmbox_dist_azim()
 
     def show_info(self, event=None):

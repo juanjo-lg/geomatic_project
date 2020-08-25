@@ -64,6 +64,11 @@ class Point:
             coord = np.array(coord)
         return np.linalg.norm(self.coord-coord)
 
+    def __str__(self):
+        # Se pone en formato string para evitar problemas de compatibilidad.
+        return str("X: %s Y: %s Z: %s"\
+            % (self.coord[0],self.coord[1],self.coord[2]))
+
 #Clase Ángulo.
 class Angle:
     def __init__(self, angle = '', ang_mes = "grad"):
@@ -120,7 +125,6 @@ class Levelling:
 class Polygonal:
     def __init__(self):
         pass
-
 
 """Pruebas"""
 """print("-------------------------")
