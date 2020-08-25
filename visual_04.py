@@ -251,6 +251,8 @@ class App(tk.Tk):
         self.ax.set_aspect('equal',adjustable='datalim')
         self.ax.set_xlabel('Coordenadas X')
         self.ax.set_ylabel('Coordenadas Y')
+        """HAY QUE DAR UNA VUELTA AL TICKLABEL_FORMAT PARA QUE NO HAYA EXPONENCIAL"""
+        self.ax.ticklabel_format(style='plain', axis='both')
         """Quito las coordenadas para que no me reescalen la figura."""
         #self.ax.format_coord = lambda x, y: ""
         self.canvas = FigureCanvasTkAgg(self.fig,master=master)
@@ -613,7 +615,7 @@ class App(tk.Tk):
             lbl_d_a = tk.Label(self.top_dist_azim,textvariable=var
                 ,bg="gray75")
             lbl_d_a.pack()
-
+        """HAY QUE SEGUIR CON ESTO, NO ESTÁ ACABADO."""
         def cmbox_dist_azim():
             # Combobox para seleccionar los puntos seleccionados en el Treeview
             table_points = []
