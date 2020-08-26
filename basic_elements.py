@@ -20,7 +20,7 @@ class Point:
     """
     #Constructor del punto.
     def __init__(self, x, y, z=0, **kwargs):
-        self.coord = np.array([x, y, z])
+        self.coord = np.array([float(x), float(y), float(z)])
         if "n" in kwargs:
             self.num = kwargs["n"]
         #En caso de no tener código, se le asigna uno por defecto.
@@ -66,8 +66,12 @@ class Point:
 
     def __str__(self):
         # Se pone en formato string para evitar problemas de compatibilidad.
-        return str("X: %s Y: %s Z: %s"\
-            % (self.coord[0],self.coord[1],self.coord[2]))
+        try:
+            return str("Nº %s | X: %s | Y: %s | Z: %s"\
+                % (self.num,self.coord[0],self.coord[1],self.coord[2]))
+        except:
+            return str("X: %s | Y: %s | Z: %s"\
+                % (self.coord[0],self.coord[1],self.coord[2]))
 
 #Clase Ángulo.
 class Angle:
@@ -142,8 +146,8 @@ print("azimut del punto 1: %s" % (p1.azimut([-2,2,0])))
 print(p1.cod)
 print(p2.coord[1])"""
 """azim_p1_p2 = Azimut(p1,p2)
-print(Azimut(p1,p2))
-ang_1 = Angle(540, ang_mes="deg")
+print(azim_p1_p2.azim)"""
+"""ang_1 = Angle(540, ang_mes="deg")
 print(ang_1.angle)
 print(ang_1.ang_mes)
 p1.set_coord("x", 100)

@@ -610,36 +610,14 @@ class App(tk.Tk):
         self.text.delete('1.0',tk.END)
 
     def dist_azim(self, event = None):
-        # Función para el cálculo de la distancia y azimut entre 2 puntos.
-        def lbl_dist_azim():
-            var = tk.StringVar()
-            var.set("Introduzca punto desde donde se visa.")
-            lbl_d_a = tk.Label(self.top_dist_azim,textvariable=var
-                ,bg="gray75")
-            lbl_d_a.pack()
-
         """HAY QUE SEGUIR CON ESTO, NO ESTÁ ACABADO."""
-        def cmbox_dist_azim():
-            # Combobox para seleccionar los puntos seleccionados en el Treeview
-            global table_points
-            table_points = []
-            table_strings = []
-            table_items = self.table.selection()
-            for item in table_items:
-                item_data = self.table.item(item,option="values")
-                point = be.Point(item_data[1],item_data[2],n=item_data[0])
-                table_points.append(point)
-            for i in table_points:
-                table_strings.append(str(i))
-            self.cmb_dist_azim = ttk.Combobox(self.top_dist_azim,
-                values=[i for i in table_strings],
-                justify=tk.CENTER,state="readonly",width=40)
-            self.cmb_dist_azim.pack()
-
-        def handler_cmb_dist_azim(event = None):
-            # Manejador para el evento de cambio de valor del Combobox
-            pos = self.cmb_dist_azim.current() # Posición del punto.
-            text = table_points[pos].coord[0])
+        # Función para el cálculo de la distancia y azimut entre 2 puntos.
+        global table_points, selected_points
+        selected_points = []
+        table_points = []
+        table_strings = []
+        table_items = self.table.selection()
+        str_var = tk.StringVar()
 
         # En caso de tener abierto algún archivo, se abre una Toplevel.
         if self.table.selection():
@@ -650,11 +628,43 @@ class App(tk.Tk):
             #self.top_dist_azim.resizable(False,False)
             # Se pone el foco en el Toplevel.
             self.top_dist_azim.focus()
-            lbl_dist_azim()
-            cmbox_dist_azim()
+
+        # Selección de puntos seleccionados en el Treeview.
+        for item in table_items:
+            item_data = self.table.item(item,option="values")
+            point = be.Point(item_data[1],item_data[2],n=item_data[0])
+            table_points.append(point)
+        for i in table_points:
+            table_strings.append(str(i))
+        # Combobox para seleccionar puntos.
+        self.cmb_dist_azim = ttk.Combobox(self.top_dist_azim,
+            values=[i for i in table_strings],
+            justify=tk.CENTER,state="readonly",width=40)
+
+        str_var.set("Introduzca punto de estación.")
+        self.lbl_d_a = tk.Label(self.top_dist_azim,textvariable=str_var
+            ,bg="gray75")
+
+        self.lbl_d_a.pack()
+        self.cmb_dist_azim.pack()
+
+        def handler_cmb_dist_azim(event = None):
+            # Manejador para el evento de cambio de valor del Combobox
+            pos = self.cmb_dist_azim.current() # Posición del punto.
+            point = table_points[pos]
+            selected_points.append(point)
+            # Cambia el texto del Label dependiendo de la situación.
+            if len(selected_points) == 1:
+                str_var.set("Introduzca punto visado.")
+            elif len(selected_points) == 2:
+                azimut = be.Azimut(selected_points[0],selected_points[1]).azim
+                self.text.insert(tk.END,"Azimut Calculado entre los puntos: %s y %s: %s"\
+                    "g\n"%(selected_points[0].num,selected_points[1].num,azimut))
+                self.top_dist_azim.destroy()
+                self.dist_azim()
 
         # Evento que devuelve los datos del Combobox cada vez que se cambia.
-        self.cmb_dist_azim.bind("<<ComboboxSelected>>",handler_cmb_dist_azim)
+        self.cmb_dist_azim.bind("<<ComboboxSelected>>", handler_cmb_dist_azim)
 
     def show_info(self, event=None):
         mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
