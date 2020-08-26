@@ -613,7 +613,7 @@ class App(tk.Tk):
         """HAY QUE SEGUIR CON ESTO, NO ESTÁ ACABADO."""
         # Función para el cálculo de la distancia y azimut entre 2 puntos.
         global table_points, selected_points
-        selected_points = []
+        selected_pnts = []
         table_points = []
         table_strings = []
         table_items = self.table.selection()
@@ -624,7 +624,7 @@ class App(tk.Tk):
             self.top_dist_azim = tk.Toplevel(self)
             self.top_dist_azim.geometry("%dx%d" % (300,85))
             self.top_dist_azim.configure(background="gray75")
-            self.top_dist_azim.title('Introduzca los puntos a calcular')
+            self.top_dist_azim.title('Azimut & Distancia')
             #self.top_dist_azim.resizable(False,False)
             # Se pone el foco en el Toplevel.
             self.top_dist_azim.focus()
@@ -652,16 +652,23 @@ class App(tk.Tk):
             # Manejador para el evento de cambio de valor del Combobox
             pos = self.cmb_dist_azim.current() # Posición del punto.
             point = table_points[pos]
-            selected_points.append(point)
+            selected_pnts.append(point)
             # Cambia el texto del Label dependiendo de la situación.
-            if len(selected_points) == 1:
+            if len(selected_pnts) == 1:
                 str_var.set("Introduzca punto visado.")
-            elif len(selected_points) == 2:
-                azimut = be.Azimut(selected_points[0],selected_points[1]).azim
-                self.text.insert(tk.END,"Azimut Calculado entre los puntos: %s y %s: %s"\
-                    "g\n"%(selected_points[0].num,selected_points[1].num,azimut))
+            elif len(selected_pnts) == 2:
+                azimut = be.Azimut(selected_pnts[0],selected_pnts[1]).azim
+                azimut = round(azimut,4)
+                dist = selected_pnts[0].distance(selected_pnts[1].coord)
+                dist = round(dist,3)
+                text_1 = "Azimut Calculado entre los puntos: %s y %s: %s g"\
+                    "\n"%(selected_pnts[0].num,selected_pnts[1].num,azimut)
+                text_2 = "Distancia entre los puntos: %s y %s: %s m"\
+                    "\n\n"%(selected_pnts[0].num,selected_pnts[1].num,dist)
+                self.text.insert(tk.END,text_1+text_2)
                 self.top_dist_azim.destroy()
                 self.dist_azim()
+            self.cmb_dist_azim.set("")
 
         # Evento que devuelve los datos del Combobox cada vez que se cambia.
         self.cmb_dist_azim.bind("<<ComboboxSelected>>", handler_cmb_dist_azim)
