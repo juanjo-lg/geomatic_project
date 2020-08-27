@@ -5,7 +5,7 @@ Created on Wen Aug 19 08:40:00 2020
 @author: Juanjo_LG
 """
 
-"""GUI para la aplicación de topografía para el TFG OOP (v.04)."""
+"""GUI para la aplicación de topografía para el TFG OOP (v.05)."""
 
 import textwrap # Módulo para dar formato a texto y quitarle la sangría.
 import os
@@ -13,6 +13,7 @@ import tkinter as tk
 import numpy as np
 import basic_elements as be
 from tkinter import filedialog, messagebox, ttk
+from Pmw import Balloon as balloon # Crea ventanas emergentes con información.
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
 
@@ -30,6 +31,8 @@ class App(tk.Tk):
         self.draw_canvas(self.fr_canvas)
         self.draw_table(self.fr_table)
         self.draw_text(self.fr_text)
+        # Crea tooltip para información.
+        self.balloon = balloon(self,relmouse="both",xoffset=10,yoffset=-15)
         # El evento de cerrar desde el aspa se conecta con la función cerrar.
         self.protocol("WM_DELETE_WINDOW", self.close)
         # Enlace de los eventos con los atajos.
@@ -40,6 +43,11 @@ class App(tk.Tk):
         self.bind('<Control-i>', self.add_manual_txt)
         self.table.bind('<Escape>', self.deselect_all)
         self.table.bind('<Button-3>',self.popup_table)
+        # Enlace con los toolip.
+        self.balloon.bind(self.btn_open,'Abrir archivo')
+        self.balloon.bind(self.btn_save,'Guardar archivo')
+        self.balloon.bind(self.btn_add,'Añadir punto de forma manual')
+        self.balloon.bind(self.btn_clear_canvas,'Reiniciar dibujo')
         # Siempre funciona enlazado con la raiz.
         self.bind('<Control-q>', self.close)
 
@@ -595,7 +603,6 @@ class App(tk.Tk):
                     # Borrado del fichero con los puntos del Treeview.
                     self.table.delete(self.table.parent(i))
                 except: pass
-
     def remove_table(self, file = None, event = None):
         # Limpieza de la tabla.
         for item in self.table.get_children():
@@ -608,7 +615,6 @@ class App(tk.Tk):
     def remove_text(self, event = None):
         # Limpieza del cuadro de texto.
         self.text.delete('1.0',tk.END)
-
     def dist_azim(self, event = None):
         """HAY QUE SEGUIR CON ESTO, NO ESTÁ ACABADO."""
         # Función para el cálculo de la distancia y azimut entre 2 puntos.
@@ -672,7 +678,6 @@ class App(tk.Tk):
 
         # Evento que devuelve los datos del Combobox cada vez que se cambia.
         self.cmb_dist_azim.bind("<<ComboboxSelected>>", handler_cmb_dist_azim)
-
     def show_info(self, event=None):
         mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
         'Mail: juanjolorenzogutierrez@gmail.com\n\n'\
@@ -681,13 +686,14 @@ class App(tk.Tk):
         'Iconos obtenidos de:\n- Smashicons\n- Freepik\n- Google\n'\
         '- Kiranshastry\n- Gregor Cresnar'
         msgbox_info=messagebox.showinfo(title='Acerca de:',message=mess)
-
     def close(self, event=None):
         # Función para cerrar el programa.
         mess = "¿Está seguro de que quiere salir del programa?"
         request = messagebox.askyesno(title="¡Aviso!", message=mess)
         if request == True:
             self.destroy()  # Con sys.exit() no funciona.
+
+
 
 # Inicializador de la App.
 def main():
