@@ -107,6 +107,9 @@ class Azimut(Angle):
         #El ángulo es el azimut.
         self.azim = (math.atan2(
             dif_coord[0],dif_coord[1]))*(200/math.pi) % 400
+    def grad_2_deg(self):
+        deg_azim = self.azim * 360/400
+        return deg_azim
 
 #Clase Ángulo Cenital.
 class Zenith(Angle):
@@ -134,10 +137,10 @@ class Polygonal:
 """print("-------------------------")
 print("PRUEBAS DE FUNCIONAMIENTO")
 print("-------------------------")
-inicio = time.time()
+inicio = time.time()"""
 p1 = Point(-1, 1, 0, cod = "Arbol")
 p2 = Point(1, 1, 0)
-p3 = Point(2, 2, 2)"""
+p3 = Point(2, 2, 2)
 """print("Dinstancia entre dos puntos con el método del punto: %s" %
     (p1.distance(p2.coord)))
 print("Dinstancia entre dos puntos con np.linalg: %s" %
@@ -155,3 +158,6 @@ p1.get_coord("y")
 fin = time.time()
 dif_time = fin - inicio
 print(dif_time)"""
+
+azimut = Azimut(p1,p2)
+print(azimut.grad_2_deg())

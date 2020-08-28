@@ -672,18 +672,25 @@ class App(tk.Tk):
                     (selected_pnts[0].coord[1],
                     selected_pnts[1].coord[1]))
                 # Adición de texto.
-                self.ax.text(selected_pnts[0].coord[0]+dist/10,
-                    selected_pnts[0].coord[1]+dist/10,
-                    str(azimut)+' g')
+                self.ax.text((selected_pnts[0].coord[0] + 
+                    selected_pnts[1].coord[0])/2,
+                    (selected_pnts[0].coord[1] +
+                    selected_pnts[1].coord[1])/2,
+                    str(azimut)+' g\n' + str(dist)+' m')
+                self.ax.text(selected_pnts[0].coord[0],
+                    selected_pnts[0].coord[1]+dist/2,
+                    'N',horizontalalignment = 'center')
                 # Dibujo de arco.
+                azim_deg = azimut * 360 / 400
                 arc = mpatches.Arc((selected_pnts[0].coord[0],
                     selected_pnts[0].coord[1]),
-                    dist/10,dist/10,theta1=0,theta2=azimut)
+                    dist/10,dist/10,theta1=90-azim_deg,theta2=90)
                 self.ax.add_patch(arc)
 
                 self.text.insert(tk.END,text_1+text_2)
                 self.top_dist_azim.destroy()
                 self.dist_azim()
+            # Se deja vacía la caja del Combobox.
             self.cmb_dist_azim.set("")
 
         # Evento que devuelve los datos del Combobox cada vez que se cambia.

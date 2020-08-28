@@ -639,7 +639,7 @@ class App(tk.Tk):
         def handler_cmb_dist_azim(event = None):
             # Manejador para el evento de cambio de valor del Combobox
             pos = self.cmb_dist_azim.current() # Posición del punto.
-            text = table_points[pos].coord[0])
+            text = table_points[pos].coord[0]
 
         # En caso de tener abierto algún archivo, se abre una Toplevel.
         if self.table.selection():
