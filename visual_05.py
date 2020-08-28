@@ -12,6 +12,7 @@ import os
 import tkinter as tk
 import numpy as np
 import basic_elements as be
+import matplotlib.patches as mpatches
 from tkinter import filedialog, messagebox, ttk
 from Pmw import Balloon as balloon # Crea ventanas emergentes con información.
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -275,7 +276,6 @@ class App(tk.Tk):
         # print(self.toolbar.toolitems)
         self.toolbar.update()
         self.canvas.get_tk_widget().pack(side=tk.TOP,fill=tk.BOTH,expand=True)
-
     def draw_table(self,master):
         # Label para la tabla de puntos.
         # Si esta etiqueta, el canvas se come a la tabla.
@@ -316,7 +316,6 @@ class App(tk.Tk):
         self.style.configure('Treeview',background="gray60",
             focuscolor=self.style.configure(".")["background"])
         """NO FUNCIONA FOCUSCOLOR EN ESTA OCASIÓN"""
-
     def draw_text(self, master):
         # Creación de caja de texto para mostrar información.
         self.text = tk.Text(master,bg='gray60')
@@ -330,7 +329,6 @@ class App(tk.Tk):
 
         self.btn_add.pack(padx=5,pady=5,side=tk.LEFT)
         self.btn_clean.pack(padx=5,pady=5,side=tk.LEFT)
-
     def popup_table(self,event=None):
         # Menú para ejecutar en el Treeview al pulsar con el botón derecho.
         self.popup_menu_table = tk.Menu(self.table, tearoff=0)
@@ -359,7 +357,6 @@ class App(tk.Tk):
         # Se muestra en las coordenadas en las que se encuentra el ratón.
         self.popup_menu_table.tk_popup(event.x_root,event.y_root)
         self.popup_menu_table.grab_release()
-
     def open_file(self,event=None):
         # Función para abrir fichero de puntos.
         self.file_name = filedialog.askopenfilename(defaultextension="*.*",
@@ -425,7 +422,6 @@ class App(tk.Tk):
                     pass # Habrá que implementar algo aquí.
                 messagebox.showerror(title="Error",
                     message="Ha habido un error al abrir el archivo.")
-
     def select_all(self, event=None):
         # Forma de iterar entre todos los subelementos de un parent en Treeview.
         for children in self.table.get_children():
@@ -434,11 +430,9 @@ class App(tk.Tk):
         # Elimina el nombre del archivo de la selección.
         self.table.selection_remove(children)
         table_items = self.table.selection()
-
     def deselect_all(self, event=None):
         # Deselecciona los items que estén seleccionados.
         self.table.selection_remove(self.table.selection())
-
     def filter(self, event=None):
         # Función para filtrar puntos según su código en el Treeview.
         def lbl_ntr_btn_top(master):
@@ -477,7 +471,6 @@ class App(tk.Tk):
             self.ntr_filter.focus()
         # Enlace para comando de botón dando a enter en el Entry.
         self.ntr_filter.bind('<KeyPress-Return>', command_btn_filter)
-
     def draw_points(self, event= None):
         # Dibuja los puntos seleccionados en la tabla.
         if self.table.selection():
@@ -495,13 +488,11 @@ class App(tk.Tk):
                 self.canvas.draw()"""
             self.ax.scatter(x_list,y_list,marker=".")
             self.canvas.draw()
-
     def empty_canvas(self, event = None):
         # Destrucción y redibujaddo del canvas.
         self.canvas.get_tk_widget().destroy()
         self.toolbar.destroy()
         self.draw_canvas(self.fr_canvas)
-
     def add_points(self, event = None):
         # Añade puntos al cuadro de texto.
         if self.table.selection():
@@ -512,7 +503,6 @@ class App(tk.Tk):
                 item_data=item_data.translate({ord(i):None for i in "'()"})
                 self.item_to_calc.append(item_data)
                 self.text.insert(tk.END,item_data+"\n")
-
     def add_manual_txt(self, event = None):
         # Ventana emergente para insertar puntos de forma manual.
         def ntr_clean(event = None):
@@ -586,7 +576,6 @@ class App(tk.Tk):
         self.btn_top_close.grid(column=3,row=3,sticky=tk.N+tk.S+tk.E+tk.W)
 
         self.top_manual.resizable(False,False)
-
     def remove_file(self, event = None):
         # Borrado de ficheros seleccionados.
         if self.table.selection() is not None:
@@ -671,6 +660,27 @@ class App(tk.Tk):
                     "\n"%(selected_pnts[0].num,selected_pnts[1].num,azimut)
                 text_2 = "Distancia entre los puntos: %s y %s: %s m"\
                     "\n\n"%(selected_pnts[0].num,selected_pnts[1].num,dist)
+                self.empty_canvas()
+                # Dibuja la línea de azimut (Norte) desde el punto de estación.
+                self.ax.plot((selected_pnts[0].coord[0],
+                    selected_pnts[0].coord[0]),
+                    (selected_pnts[0].coord[1],
+                    selected_pnts[0].coord[1]+dist/2))
+                # Dibuja una línea entre los puntos.
+                self.ax.plot((selected_pnts[0].coord[0],
+                    selected_pnts[1].coord[0]),
+                    (selected_pnts[0].coord[1],
+                    selected_pnts[1].coord[1]))
+                # Adición de texto.
+                self.ax.text(selected_pnts[0].coord[0]+dist/10,
+                    selected_pnts[0].coord[1]+dist/10,
+                    str(azimut)+' g')
+                # Dibujo de arco.
+                arc = mpatches.Arc((selected_pnts[0].coord[0],
+                    selected_pnts[0].coord[1]),
+                    dist/10,dist/10,theta1=0,theta2=azimut)
+                self.ax.add_patch(arc)
+
                 self.text.insert(tk.END,text_1+text_2)
                 self.top_dist_azim.destroy()
                 self.dist_azim()

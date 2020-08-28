@@ -23,7 +23,7 @@ sift = cv2.SIFT_create() #He cambiado esto porque es lo que no funcionaba.
 kp1, des1 = sift.detectAndCompute(img1,None)
 kp2, des2 = sift.detectAndCompute(img2,None)
 
-print("kp1")
+print(des1)
 
 # FLANN parameters
 FLANN_INDEX_KDTREE = 0
