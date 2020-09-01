@@ -17,6 +17,7 @@ from tkinter import filedialog, messagebox, ttk
 from Pmw import Balloon as balloon # Crea ventanas emergentes con información.
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
+from matplotlib import ticker
 
 # Clase App que hereda de tk.Tk()
 class App(tk.Tk):
@@ -263,6 +264,9 @@ class App(tk.Tk):
         """HAY QUE DAR UNA VUELTA AL TICKLABEL_FORMAT PARA QUE NO HAYA EXPONENCIAL"""
         self.ax.ticklabel_format(style='plain', axis='both')
         """Quito las coordenadas para que no me reescalen la figura."""
+        # Formato de coordenadas mostrado en los ejes 'X' e 'Y'.
+        self.ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.0f'))
+        self.ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.0f'))
         #self.ax.format_coord = lambda x, y: ""
         self.canvas = FigureCanvasTkAgg(self.fig,master=master)
         self.canvas.draw()
@@ -672,7 +676,7 @@ class App(tk.Tk):
                     (selected_pnts[0].coord[1],
                     selected_pnts[1].coord[1]))
                 # Adición de texto.
-                self.ax.text((selected_pnts[0].coord[0] + 
+                self.ax.text((selected_pnts[0].coord[0] +
                     selected_pnts[1].coord[0])/2,
                     (selected_pnts[0].coord[1] +
                     selected_pnts[1].coord[1])/2,
