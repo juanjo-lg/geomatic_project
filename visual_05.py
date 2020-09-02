@@ -653,7 +653,7 @@ class App(tk.Tk):
         self.lbl_d_a.pack()
         self.cmb_dist_azim.pack()
 
-        def handler_cmb_dist_azim(event = None):
+        def handler_cmb_dist_azim(event=None):
             # Manejador para el evento de cambio de valor del Combobox
             pos = self.cmb_dist_azim.current() # Posición del punto.
             point = table_points[pos]
@@ -708,13 +708,70 @@ class App(tk.Tk):
     def transformation(self, event=None):
         """HAY QUE SEGUIR CON ESTO"""
         # Función de transformación de puntos.
+        table_points = []
+        table_strings = []
+        table_items = self.table.selection()
+        str_var = tk.StringVar()
+        var_trans = tk.IntVar()
+        var_trans.set(1)
+
+        def handler_cmb_trans(event=None):
+            # Manejador para el evento de cambio de valor del Combobox.
+            pass
+        def handler_radio(event=None):
+            # Manejador para el evento de cambio de valor del Radiobutton.
+            if var_trans.get() == 1:
+                print("Parámetros")
+            else:
+                print("Cálculo Helmert")
+
         # En caso de tener abierto algún archivo, se abre una Toplevel.
         if self.table.selection():
             self.top_trans = tk.Toplevel(self)
-            self.top_trans.geometry("%dx%d" % (300,85))
+            #self.top_trans.geometry("%dx%d" % (300,85))
             self.top_trans.configure(background="gray75")
             self.top_trans.title('Transformación Helmert')
             self.top_trans.focus()
+
+        # Selección de puntos seleccionados en el Treeview.
+        for item in table_items:
+            item_data = self.table.item(item,option="values")
+            point = be.Point(item_data[1],item_data[2],n=item_data[0])
+            table_points.append(point)
+        for i in table_points:
+            table_strings.append(str(i))
+        # Frames para la Toplevel de transformación.
+        self.fr_trans_1 = tk.Frame(self.top_trans,bg="gray75")
+        self.fr_trans_2 = tk.Frame(self.top_trans,bg="gray75")
+        # Label para los Frames.
+        self.lbl_trans_1 = tk.Label(self.fr_trans_1,textvariable=str_var,
+            bg="gray75")
+        self.lbl_trans_2 = tk.Label(self.fr_trans_2,
+            text='Tipo de cálculo',bg="gray75")
+        # Combobox para seleccionar puntos.
+        self.cmb_trans = ttk.Combobox(self.fr_trans_1,
+            values=[i for i in table_strings],
+            justify=tk.CENTER,state="readonly",width=40)
+        # Radiobuttons para opciones de cálculo.
+        self.radio_trans_param = tk.Radiobutton(self.fr_trans_2,
+            text="Cálculo de parámetros",bg="gray75",
+            variable=var_trans,value=1,command=handler_radio)
+        self.radio_trans_calc = tk.Radiobutton(self.fr_trans_2,
+            text='Cálculo de transformación',bg="gray75",
+            variable=var_trans,value=2,command=handler_radio)
+        """LA VARIABLE SE TIENE QUE CONFIGURAR AL CAMBIAR EL Combobox
+        Y EL RADIOBUTTON"""
+        str_var.set("Pruebas")
+        # Invoke hace que se active ese Radiobutton.
+        self.radio_trans_param.invoke()
+
+        self.fr_trans_1.pack(side=tk.LEFT)
+        self.fr_trans_2.pack(side=tk.RIGHT)
+        self.lbl_trans_1.pack()
+        self.lbl_trans_2.pack()
+        self.cmb_trans.pack()
+        self.radio_trans_param.pack()
+        self.radio_trans_calc.pack()
 
     def show_info(self, event=None):
         mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
@@ -730,8 +787,6 @@ class App(tk.Tk):
         request = messagebox.askyesno(title="¡Aviso!", message=mess)
         if request == True:
             self.destroy()  # Con sys.exit() no funciona.
-
-
 
 # Inicializador de la App.
 def main():
