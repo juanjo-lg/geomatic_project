@@ -49,7 +49,12 @@ class App(tk.Tk):
         self.balloon.bind(self.btn_open,'Abrir archivo')
         self.balloon.bind(self.btn_save,'Guardar archivo')
         self.balloon.bind(self.btn_add,'Añadir punto de forma manual')
+        self.balloon.bind(self.btn_clean,'Borrar cuadro de texto')
         self.balloon.bind(self.btn_clear_canvas,'Reiniciar dibujo')
+        self.balloon.bind(self.btn_select_all,'Seleccionar todos los puntos')
+        self.balloon.bind(self.btn_filter,'Filtrar puntos por códigos')
+        self.balloon.bind(self.btn_draw,'Dibujar puntos seleccionados')
+        self.balloon.bind(self.btn_dist_azim,'Cálculo de distancia y azimut')
         # Siempre funciona enlazado con la raiz.
         self.bind('<Control-q>', self.close)
 
@@ -211,7 +216,7 @@ class App(tk.Tk):
             self.btn_trans = tk.Button(
                 self.fr_calc,image=self.img_trans,text='Transformación',
                 compound=tk.TOP,height=int(self.screen_size[1]/12),
-                width=80,bg="gray60",
+                command=self.transformation,width=80,bg="gray60",
                 relief=tk.FLAT)
             self.btn_trans.pack(side=tk.LEFT)
             self.notebook.add(self.fr_calc,text="Cálculos")
@@ -610,6 +615,7 @@ class App(tk.Tk):
         self.text.delete('1.0',tk.END)
     def dist_azim(self, event = None):
         """HAY QUE SEGUIR CON ESTO, NO ESTÁ ACABADO."""
+        """HAY QUE PONER EL NÚMERO DE PUNTO EN EL DIBUJO"""
         # Función para el cálculo de la distancia y azimut entre 2 puntos.
         global table_points, selected_points
         selected_pnts = []
@@ -699,6 +705,17 @@ class App(tk.Tk):
 
         # Evento que devuelve los datos del Combobox cada vez que se cambia.
         self.cmb_dist_azim.bind("<<ComboboxSelected>>", handler_cmb_dist_azim)
+    def transformation(self, event=None):
+        """HAY QUE SEGUIR CON ESTO"""
+        # Función de transformación de puntos.
+        # En caso de tener abierto algún archivo, se abre una Toplevel.
+        if self.table.selection():
+            self.top_trans = tk.Toplevel(self)
+            self.top_trans.geometry("%dx%d" % (300,85))
+            self.top_trans.configure(background="gray75")
+            self.top_trans.title('Transformación Helmert')
+            self.top_trans.focus()
+
     def show_info(self, event=None):
         mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
         'Mail: juanjolorenzogutierrez@gmail.com\n\n'\
