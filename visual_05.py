@@ -710,20 +710,51 @@ class App(tk.Tk):
         # Función de transformación de puntos.
         table_points = []
         table_strings = []
+        points_base = []
+        points_target = []
         table_items = self.table.selection()
         str_var = tk.StringVar()
         var_trans = tk.IntVar()
-        var_trans.set(1)
+        #var_trans.set(1)
 
         def handler_cmb_trans(event=None):
             # Manejador para el evento de cambio de valor del Combobox.
-            pass
+            # Posición en el Combobox para manejar el listado de puntos.
+            """HAY QUE SEGUIR!!!!!"""
+            # Caso de cálculo de parámetros.
+            if var_trans.get() == 1:
+                if len(points_base) < int(self.spin_param.get()):
+                    # Se añaden los puntos de base.
+                    points_base.append(table_points[self.cmb_trans.current()])
+                elif len(points_target) < int(self.spin_param.get()):
+                    # Se añaden los puntos objetivo.
+                    points_target.append(table_points[self.cmb_trans.current()])
+            # Caso de cálculo de transformación.
+            else:
+                pass
+
         def handler_radio(event=None):
             # Manejador para el evento de cambio de valor del Radiobutton.
             if var_trans.get() == 1:
-                print("Parámetros")
+                # Cambia el texto del label.
+                str_var.set("Puntos para el cálculo de parámetros")
+                self.lbl_param_num = tk.Label(self.fr_trans_1,
+                    text='Número de puntos a utilizar',bg="gray75")
+                # Spinbox con número de puntos para obtener parámetros.
+                # Número máximo de puntos = mitad de puntos seleccionados.
+                self.spin_param = tk.Spinbox(self.fr_trans_1,from_=2,
+                    to=len(table_points)/2,
+                    justify=tk.CENTER,state='readonly')
+                self.spin_param.pack(side=tk.BOTTOM)
+                self.lbl_param_num.pack(side=tk.BOTTOM)
             else:
-                print("Cálculo Helmert")
+                self.lbl_
+                str_var.set("Puntos para el cálculo Helmert")
+                try:
+                    self.spin_param.destroy()
+                    self.lbl_param_num.destroy()
+                except:
+                    pass
 
         # En caso de tener abierto algún archivo, se abre una Toplevel.
         if self.table.selection():
@@ -761,7 +792,7 @@ class App(tk.Tk):
             variable=var_trans,value=2,command=handler_radio)
         """LA VARIABLE SE TIENE QUE CONFIGURAR AL CAMBIAR EL Combobox
         Y EL RADIOBUTTON"""
-        str_var.set("Pruebas")
+
         # Invoke hace que se active ese Radiobutton.
         self.radio_trans_param.invoke()
 
@@ -772,6 +803,9 @@ class App(tk.Tk):
         self.cmb_trans.pack()
         self.radio_trans_param.pack()
         self.radio_trans_calc.pack()
+
+        # Evento que devuelve los datos del Combobox cada vez que se cambia.
+        self.cmb_trans.bind("<<ComboboxSelected>>", handler_cmb_trans)
 
     def show_info(self, event=None):
         mess = 'Autor: Juan José Lorenzo Gutiérrez\n'\
