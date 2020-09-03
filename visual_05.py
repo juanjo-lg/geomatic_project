@@ -729,6 +729,19 @@ class App(tk.Tk):
                 elif len(points_target) < int(self.spin_param.get()):
                     # Se añaden los puntos objetivo.
                     points_target.append(table_points[self.cmb_trans.current()])
+                    # Al añadir los puntos, salta mensaje y cierra ventana.
+                    if len(points_target) == int(self.spin_param.get()):
+                        for i in range(len(points_target)):
+                            tk.Label(self.fr_trans_1,
+                                text='%s --> %s' % (points_base[i],
+                                points_target[i])).pack()
+                        """msg = tk.messagebox.showinfo(
+                            title='Todos los puntos seleccionados',
+                            message='Cantidad máxima de puntos a seleccionar:'\
+                            ' %s' % (self.spin_param.get()))
+                        if msg:
+                            self.top_trans.destroy()"""
+
             # Caso de cálculo de transformación.
             else:
                 pass
@@ -743,12 +756,13 @@ class App(tk.Tk):
                 # Spinbox con número de puntos para obtener parámetros.
                 # Número máximo de puntos = mitad de puntos seleccionados.
                 self.spin_param = tk.Spinbox(self.fr_trans_1,from_=2,
-                    to=len(table_points)/2,
+                    to=len(table_points)//2,
                     justify=tk.CENTER,state='readonly')
+                """TIENE QUE HABER MÍNIMO 5 PUNTOS SELECCIONADO
+                HAY QUE ARREGLARLO"""
                 self.spin_param.pack(side=tk.BOTTOM)
                 self.lbl_param_num.pack(side=tk.BOTTOM)
             else:
-                self.lbl_
                 str_var.set("Puntos para el cálculo Helmert")
                 try:
                     self.spin_param.destroy()
@@ -769,6 +783,7 @@ class App(tk.Tk):
             item_data = self.table.item(item,option="values")
             point = be.Point(item_data[1],item_data[2],n=item_data[0])
             table_points.append(point)
+
         for i in table_points:
             table_strings.append(str(i))
         # Frames para la Toplevel de transformación.
