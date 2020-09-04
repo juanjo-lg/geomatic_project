@@ -729,12 +729,16 @@ class App(tk.Tk):
                 elif len(points_target) < int(self.spin_param.get()):
                     # Se añaden los puntos objetivo.
                     points_target.append(table_points[self.cmb_trans.current()])
-                    # Al añadir los puntos, salta mensaje y cierra ventana.
+                    # Se añaden labels con la relación entre los puntos.
                     if len(points_target) == int(self.spin_param.get()):
                         for i in range(len(points_target)):
                             tk.Label(self.fr_trans_1,
                                 text='%s --> %s' % (points_base[i],
                                 points_target[i])).pack()
+                        # Desaparecen el Spinbox y la etiqueta de número.
+                        self.spin_param.destroy()
+                        self.lbl_param_num.destroy()
+                        # Al añadir los puntos, salta mensaje y cierra ventana.
                         """msg = tk.messagebox.showinfo(
                             title='Todos los puntos seleccionados',
                             message='Cantidad máxima de puntos a seleccionar:'\
