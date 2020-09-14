@@ -199,14 +199,14 @@ class Param2D():
         mu = b/np.sin(alpha*np.pi/200)
         # Escritura de los distintos parámetros en un fichero ".txt"
         # os.linesep es lo mismo que "\n"
-        """return a,b,tx,ty,alpha,mu"""
-        print("Parámetros de transformación para sistema Helmert 2D."+os.linesep)
+        return a,b,tx,ty,alpha,mu
+        """print("Parámetros de transformación para sistema Helmert 2D."+os.linesep)
         print("a: %.15f\n" % a)
         print("b: %.15f\n" % b)
         print("Tx: %.15f\n" % tx)
         print("Ty: %.15f\n" % ty)
         print("Alpha: %.15f\n" % alpha)
-        print("mu: %.4f" % mu)
+        print("mu: %.4f" % mu)"""
 
 #Clase Nivelación.
 class Levelling:

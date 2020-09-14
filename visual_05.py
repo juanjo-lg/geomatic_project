@@ -739,9 +739,14 @@ class App(tk.Tk):
                                 points_target[i])).pack()
                         """FUNCIONA!!!!"""
                         # Cálculo de parámetros con basic_elements.
-                        be.Param2D(points_base,points_target,int(
+                        param = be.Param2D(points_base,points_target,int(
                             self.spin_param.get())).calc_param()
-
+                        param_txt = "Parámetros de transformación:\n\n"\
+                            "a: %.15f\nb: %.15f\nTx: %.15f\n"\
+                            "Ty: %.15f\nAlpha: %.15f\nmu: %.4f\n" % (
+                            param[0],param[1],param[2],param[3],
+                            param[4],param[5])
+                        self.text.insert(tk.END,param_txt)
                         # Desaparecen el Spinbox y la etiqueta de número.
                         self.spin_param.destroy()
                         self.lbl_param_num.destroy()
@@ -766,11 +771,10 @@ class App(tk.Tk):
                     text='Número de puntos a utilizar',bg="gray75")
                 # Spinbox con número de puntos para obtener parámetros.
                 # Número máximo de puntos = mitad de puntos seleccionados.
-                self.spin_param = tk.Spinbox(self.fr_trans_1,from_=2,
-                    to=len(table_points)//2,
+                self.spin_param = tk.Spinbox(self.fr_trans_1,from_=3,
+                    to=len(table_points)+1//2,
                     justify=tk.CENTER,state='readonly')
-                """TIENE QUE HABER MÍNIMO 5 PUNTOS SELECCIONADO
-                HAY QUE ARREGLARLO"""
+                """ALGO FALLA CON EL NÚMERO DE PUNTOS DEL Spinbox."""
                 self.spin_param.pack(side=tk.BOTTOM)
                 self.lbl_param_num.pack(side=tk.BOTTOM)
             else:
