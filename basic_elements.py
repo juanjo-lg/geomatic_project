@@ -7,6 +7,7 @@ Created on Wen Jul 15 12:51:00 2020
 
 """Elementos Básicos para aplicación de Topografía."""
 
+import os
 import time
 import math
 import numpy as np
@@ -122,6 +123,90 @@ class Zenith(Angle):
 class Base(Point, Azimut, Zenith):
     def __init__(self, coord, azim):
         pass
+
+# Clase transformación Helmert 2D.
+class Param2D():
+    # pb_list => Lista de Points de sistema de partida.
+    # pt_list => Lista de Points de sistema objetivo.
+    def __init__(self,pb_list,pt_list,n):
+        self.pb_list = pb_list
+        self.pt_list = pt_list
+        self.n = n # Número de puntos a transformar.
+    def calc_param(self):
+        # Método para el cálculo de parámetros de la transformación.
+        # Creación de listas con todas las "x" y las "y" de todos los puntos.
+        # Listas para puntos de partida.
+        lst_x_pb = []
+        lst_y_pb = []
+        # Listas para puntos objetivo.
+        lst_x_pt = []
+        lst_y_pt = []
+        # Adición de coordenadas a las listas.
+        for point in self.pb_list:
+            lst_x_pb.append(float(point.coord[0]))
+            lst_y_pb.append(float(point.coord[1]))
+        for point in self.pt_list:
+            lst_x_pt.append(float(point.coord[0]))
+            lst_y_pt.append(float(point.coord[1]))
+        # Cálculo del las coordenadas de los centroides de partida.
+        cent_x_pb = np.average(lst_x_pb)
+        cent_y_pb = np.average(lst_y_pb)
+        # Cálculo del las coordenadas de los centroides objetivo.
+        cent_x_pt = np.average(lst_x_pt)
+        cent_y_pt = np.average(lst_y_pt)
+        # Origen de centroides.
+        orig_cent_pb = []
+        orig_cent_pt = []
+        cnt = -1 # Contador para bucle for.
+        for i in range(self.n):
+            cnt += 1
+            orig_cent_pb.append((lst_x_pb[cnt]-cent_x_pb
+                ,lst_y_pb[cnt]-cent_y_pb))
+            orig_cent_pt.append((lst_x_pt[cnt]-cent_x_pt
+                ,lst_y_pt[cnt]-cent_y_pt))
+        # Listas para ecuaciones I, II y III.
+        lst_I = []
+        lst_II = []
+        lst_III = []
+        # Cálculo de ecuación I: x'*X'+y'*Y'
+        # Cálculo de ecuación II: x'*Y'-y'*X'
+        # Cálculo de ecuación III: (x'**2)+(y'**2)
+        cnt = -1 # Contador para bucle for.
+        for i in orig_cent_pb:
+            cnt += 1
+            lst_I.append(orig_cent_pb[cnt][0]*orig_cent_pt[cnt][0]
+                +orig_cent_pb[cnt][1]*orig_cent_pt[cnt][1])
+            lst_II.append(orig_cent_pb[cnt][0]*orig_cent_pt[cnt][1]
+                -orig_cent_pb[cnt][1]*orig_cent_pt[cnt][0])
+            lst_III.append((orig_cent_pb[cnt][0])**2+(orig_cent_pb[cnt][1])**2)
+        # Sumatorios de ecuaciones.
+        sum_lst_I = np.sum(lst_I)
+        sum_lst_II = np.sum(lst_II)
+        sum_lst_III = np.sum(lst_III)
+        # Cálculo de parámetros "a" y "b". a = I/III, b = II/III
+        a = sum_lst_I/sum_lst_III
+        b = sum_lst_II/sum_lst_III
+        # Cálculo de Tx y Ty.
+        # Tx = (SUM(X)-SUM(ax)+SUM(by))/n; Ty = (SUM(Y)-SUM(bx)-SUM(ay))/n
+        # Listas por array para poder multiplicar los elementos por un número.
+        tx = (np.sum(lst_x_pb)-np.sum(a*np.array(lst_x_pt))
+            +np.sum(b*np.array(lst_y_pt)))/len(lst_x_pb)
+        ty = (np.sum(lst_y_pb)-np.sum(b*np.array(lst_x_pt))
+            -np.sum(a*np.array(lst_y_pt)))/len(lst_y_pb)
+        # Cálculo del ángulo de giro. tg(alpha) = b/a
+        # Cálculo de la escala. mu = b/sen(alpha)
+        alpha = np.arctan2(b,a)*200/np.pi
+        mu = b/np.sin(alpha*np.pi/200)
+        # Escritura de los distintos parámetros en un fichero ".txt"
+        # os.linesep es lo mismo que "\n"
+        """return a,b,tx,ty,alpha,mu"""
+        print("Parámetros de transformación para sistema Helmert 2D."+os.linesep)
+        print("a: %.15f\n" % a)
+        print("b: %.15f\n" % b)
+        print("Tx: %.15f\n" % tx)
+        print("Ty: %.15f\n" % ty)
+        print("Alpha: %.15f\n" % alpha)
+        print("mu: %.4f" % mu)
 
 #Clase Nivelación.
 class Levelling:

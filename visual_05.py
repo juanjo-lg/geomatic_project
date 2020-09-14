@@ -722,6 +722,8 @@ class App(tk.Tk):
             # Posición en el Combobox para manejar el listado de puntos.
             """HAY QUE SEGUIR!!!!!"""
             # Caso de cálculo de parámetros.
+            # Points_base => Puntos en sistema de partida.
+            # Points_target => Puntos en el sistema a convertir.
             if var_trans.get() == 1:
                 if len(points_base) < int(self.spin_param.get()):
                     # Se añaden los puntos de base.
@@ -735,6 +737,11 @@ class App(tk.Tk):
                             tk.Label(self.fr_trans_1,
                                 text='%s --> %s' % (points_base[i],
                                 points_target[i])).pack()
+                        """FUNCIONA!!!!"""
+                        # Cálculo de parámetros con basic_elements.
+                        be.Param2D(points_base,points_target,int(
+                            self.spin_param.get())).calc_param()
+
                         # Desaparecen el Spinbox y la etiqueta de número.
                         self.spin_param.destroy()
                         self.lbl_param_num.destroy()
