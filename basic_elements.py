@@ -208,6 +208,25 @@ class Param2D():
         print("Alpha: %.15f\n" % alpha)
         print("mu: %.4f" % mu)"""
 
+# Clase Transformación Helmert2D
+class H2D():
+    def __init__(self, x, y, mu, tx, ty, ang):
+        self.x = x
+        self.y = y
+        self.mu = mu
+        self.tx = tx
+        self.ty = ty
+        self.ang = ang * np.pi / 200  # Paso de ángulo a radianes.
+        # Matriz de traslación.
+        mat_tras = np.matrix(([self.tx],[self.ty]))
+        # Matriz de rotación en el eje Z.
+        mat_rot = np.matrix(([np.cos(self.ang), -(np.sin(self.ang))],
+                              [np.sin(self.ang), np.cos(self.ang)]))
+        print("a: ",mat_rot)
+        mat_point = np.matrix(([self.x],[self.y]))
+        new_point = mat_tras + mu * mat_rot * mat_point
+        print(new_point)
+
 #Clase Nivelación.
 class Levelling:
     def __init__(self):

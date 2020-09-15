@@ -725,6 +725,7 @@ class App(tk.Tk):
             # Points_base => Puntos en sistema de partida.
             # Points_target => Puntos en el sistema a convertir.
             if var_trans.get() == 1:
+                # Primero los puntos de partida y después los de llegada.
                 if len(points_base) < int(self.spin_param.get()):
                     # Se añaden los puntos de base.
                     points_base.append(table_points[self.cmb_trans.current()])
@@ -764,7 +765,7 @@ class App(tk.Tk):
 
         def handler_radio(event=None):
             # Manejador para el evento de cambio de valor del Radiobutton.
-            if var_trans.get() == 1:
+            if var_trans.get() == 1 and len(table_items) >= 6:
                 # Cambia el texto del label.
                 str_var.set("Puntos para el cálculo de parámetros")
                 self.lbl_param_num = tk.Label(self.fr_trans_1,
@@ -777,16 +778,27 @@ class App(tk.Tk):
                 """ALGO FALLA CON EL NÚMERO DE PUNTOS DEL Spinbox."""
                 self.spin_param.pack(side=tk.BOTTOM)
                 self.lbl_param_num.pack(side=tk.BOTTOM)
-            else:
+            elif var_trans.get() == 1 and len(table_items) < 6:
+                # Si los puntos son menos de 6, se lanza un mensaje de error y
+                # se pasa el Radiobutton a la otra opción.
+                mess = "Debe haber al menos 3 pares de puntos para el cálculo"\
+                    " de los parámetros."
+                messagebox.showerror(title='Error',message=mess)
+                var_trans.set(2)
+                str_var.set("Puntos para el cálculo Helmert")
+                self.top_trans.focus()
+            elif var_trans.get() == 2:
                 str_var.set("Puntos para el cálculo Helmert")
                 try:
                     self.spin_param.destroy()
                     self.lbl_param_num.destroy()
                 except:
                     pass
+                """AQUI HAY QUE AÑADIR ESPACIO PARA INSERTAR LOS PARÁMETROS
+                O USAR AUTOMÁTICAMENTE LOS QUE YA HUBIERA"""
 
         # En caso de tener abierto algún archivo, se abre una Toplevel.
-        if self.table.selection():
+        if self.table.selection() :
             self.top_trans = tk.Toplevel(self)
             #self.top_trans.geometry("%dx%d" % (300,85))
             self.top_trans.configure(background="gray75")
