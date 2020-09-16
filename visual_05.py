@@ -766,6 +766,9 @@ class App(tk.Tk):
         def handler_radio(event=None):
             # Manejador para el evento de cambio de valor del Radiobutton.
             if var_trans.get() == 1 and len(table_items) >= 6:
+                # Cuando está pulsado un radiobutton, se queda desactivado.
+                self.radio_trans_param.configure(state="disabled")
+                self.radio_trans_calc.configure(state="normal")
                 # Cambia el texto del label.
                 str_var.set("Puntos para el cálculo de parámetros")
                 self.lbl_param_num = tk.Label(self.fr_trans_1,
@@ -788,10 +791,19 @@ class App(tk.Tk):
                 str_var.set("Puntos para el cálculo Helmert")
                 self.top_trans.focus()
             elif var_trans.get() == 2:
+                # Cuando está pulsado un radiobutton, se queda desactivado.
+                self.radio_trans_param.configure(state="normal")
+                self.radio_trans_calc.configure(state="disabled")
                 str_var.set("Puntos para el cálculo Helmert")
+                """HAY QUE SEGUIR CON ESTO PARA QUE SALGAN LOS WIDGETS
+                NECESARIOS AL CAMBIAR A CÁLCULO DE TRANSFORMACIÓN."""
                 try:
+                    # Se borran elementos innecesarios del Frame.
                     self.spin_param.destroy()
                     self.lbl_param_num.destroy()
+                    for i in self.fr_trans_1.winfo_children():
+                        if type(i) == tk.Label:
+                            i.destroy()
                 except:
                     pass
                 """AQUI HAY QUE AÑADIR ESPACIO PARA INSERTAR LOS PARÁMETROS
