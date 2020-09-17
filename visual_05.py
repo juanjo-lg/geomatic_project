@@ -740,14 +740,14 @@ class App(tk.Tk):
                                 points_target[i])).pack()
                         """FUNCIONA!!!!"""
                         # Cálculo de parámetros con basic_elements.
-                        param = be.Param2D(points_base,points_target,int(
+                        self.param = be.Param2D(points_base,points_target,int(
                             self.spin_param.get())).calc_param()
-                        param_txt = "Parámetros de transformación:\n\n"\
+                        self.param_txt = "Parámetros de transformación:\n\n"\
                             "a: %.15f\nb: %.15f\nTx: %.15f\n"\
                             "Ty: %.15f\nAlpha: %.15f\nmu: %.4f\n" % (
-                            param[0],param[1],param[2],param[3],
-                            param[4],param[5])
-                        self.text.insert(tk.END,param_txt)
+                            self.param[0],self.param[1],self.param[2],
+                            self.param[3],self.param[4],self.param[5])
+                        self.text.insert(tk.END,self.param_txt)
                         # Desaparecen el Spinbox y la etiqueta de número.
                         self.spin_param.destroy()
                         self.lbl_param_num.destroy()
@@ -764,8 +764,17 @@ class App(tk.Tk):
                 pass
 
         def handler_radio(event=None):
+            """SOLAMENTE DEJA HACER LA OPERACION DE CALCULAR LOS PARÁMETROS
+            SI ANTES NO SE CAMBIA EL RADIOBUTTON"""
             # Manejador para el evento de cambio de valor del Radiobutton.
             if var_trans.get() == 1 and len(table_items) >= 6:
+                # Si existe lbl_trans_1, se destruye.
+                try:
+                    # Se borran elementos innecesarios del Frame.
+                    for i in self.fr_trans_1.winfo_children():
+                        i.destroy()
+                except:
+                    pass
                 # Cuando está pulsado un radiobutton, se queda desactivado.
                 self.radio_trans_param.configure(state="disabled")
                 self.radio_trans_calc.configure(state="normal")
@@ -779,6 +788,15 @@ class App(tk.Tk):
                     to=len(table_points)+1//2,
                     justify=tk.CENTER,state='readonly')
                 """ALGO FALLA CON EL NÚMERO DE PUNTOS DEL Spinbox."""
+                # Label para el Frame.
+                self.lbl_trans_1 = tk.Label(self.fr_trans_1,
+                    textvariable=str_var,bg="gray75")
+                # Combobox para seleccionar puntos.
+                self.cmb_trans = ttk.Combobox(self.fr_trans_1,
+                    values=[i for i in table_strings],
+                    justify=tk.CENTER,state="readonly",width=40)
+                self.lbl_trans_1.pack()
+                self.cmb_trans.pack()
                 self.spin_param.pack(side=tk.BOTTOM)
                 self.lbl_param_num.pack(side=tk.BOTTOM)
             elif var_trans.get() == 1 and len(table_items) < 6:
@@ -794,18 +812,26 @@ class App(tk.Tk):
                 # Cuando está pulsado un radiobutton, se queda desactivado.
                 self.radio_trans_param.configure(state="normal")
                 self.radio_trans_calc.configure(state="disabled")
-                str_var.set("Puntos para el cálculo Helmert")
-                """HAY QUE SEGUIR CON ESTO PARA QUE SALGAN LOS WIDGETS
-                NECESARIOS AL CAMBIAR A CÁLCULO DE TRANSFORMACIÓN."""
-                try:
-                    # Se borran elementos innecesarios del Frame.
-                    self.spin_param.destroy()
-                    self.lbl_param_num.destroy()
-                    for i in self.fr_trans_1.winfo_children():
-                        if type(i) == tk.Label:
-                            i.destroy()
-                except:
+                str_var.set("Parámetros para el cálculo Helmert")
+
+                # Se borran elementos innecesarios del Frame.
+                for i in self.fr_trans_1.winfo_children():
+                    i.destroy()
+                # Se vuelve a crear el encabezado.
+                self.lbl_trans_1 = tk.Label(self.fr_trans_1,
+                    textvariable=str_var,bg="gray75")
+                self.lbl_trans_1.pack()
+                # En caso de que ya haya unos parámetros de transformación,
+                # Se muestran estos en el widget text.
+                if self.param:
+                    self.text_param = tk.Text(self.fr_trans_1,bg='gray60',
+                    width=50,height=10)
+                    self.text_param.insert(tk.END,self.param_txt)
+                    self.text_param.pack(padx=5,expand=False)
+                # Si no hay parámetros, se introducen manualmente.
+                else:
                     pass
+
                 """AQUI HAY QUE AÑADIR ESPACIO PARA INSERTAR LOS PARÁMETROS
                 O USAR AUTOMÁTICAMENTE LOS QUE YA HUBIERA"""
 
@@ -829,14 +855,14 @@ class App(tk.Tk):
         self.fr_trans_1 = tk.Frame(self.top_trans,bg="gray75")
         self.fr_trans_2 = tk.Frame(self.top_trans,bg="gray75")
         # Label para los Frames.
-        self.lbl_trans_1 = tk.Label(self.fr_trans_1,textvariable=str_var,
-            bg="gray75")
+        """self.lbl_trans_1 = tk.Label(self.fr_trans_1,textvariable=str_var,
+            bg="gray75")"""
         self.lbl_trans_2 = tk.Label(self.fr_trans_2,
             text='Tipo de cálculo',bg="gray75")
         # Combobox para seleccionar puntos.
-        self.cmb_trans = ttk.Combobox(self.fr_trans_1,
+        """self.cmb_trans = ttk.Combobox(self.fr_trans_1,
             values=[i for i in table_strings],
-            justify=tk.CENTER,state="readonly",width=40)
+            justify=tk.CENTER,state="readonly",width=40)"""
         # Radiobuttons para opciones de cálculo.
         self.radio_trans_param = tk.Radiobutton(self.fr_trans_2,
             text="Cálculo de parámetros",bg="gray75",
@@ -852,9 +878,9 @@ class App(tk.Tk):
 
         self.fr_trans_1.pack(side=tk.LEFT)
         self.fr_trans_2.pack(side=tk.RIGHT)
-        self.lbl_trans_1.pack()
+        """self.lbl_trans_1.pack()"""
         self.lbl_trans_2.pack()
-        self.cmb_trans.pack()
+        """self.cmb_trans.pack()"""
         self.radio_trans_param.pack()
         self.radio_trans_calc.pack()
 
