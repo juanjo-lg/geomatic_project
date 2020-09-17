@@ -715,6 +715,7 @@ class App(tk.Tk):
         table_items = self.table.selection()
         str_var = tk.StringVar()
         var_trans = tk.IntVar()
+        self.param = None   # Se crea la variable parámetros de transformación.
         #var_trans.set(1)
 
         def handler_cmb_trans(event=None):
@@ -817,6 +818,8 @@ class App(tk.Tk):
                 # Se borran elementos innecesarios del Frame.
                 for i in self.fr_trans_1.winfo_children():
                     i.destroy()
+                for j in self.fr_trans_3.winfo_children():
+                    j.destroy()
                 # Se vuelve a crear el encabezado.
                 self.lbl_trans_1 = tk.Label(self.fr_trans_1,
                     textvariable=str_var,bg="gray75")
@@ -825,12 +828,19 @@ class App(tk.Tk):
                 # Se muestran estos en el widget text.
                 if self.param:
                     self.text_param = tk.Text(self.fr_trans_1,bg='gray60',
-                    width=50,height=10)
+                        width=50,height=8)
                     self.text_param.insert(tk.END,self.param_txt)
                     self.text_param.pack(padx=5,expand=False)
                 # Si no hay parámetros, se introducen manualmente.
                 else:
-                    pass
+                    txt = ['Tx','Ty','Alpha','Mu']
+                    count = 0   # Variable para control de filas y columnas.
+                    for i in txt:
+                        # Una etiqueta para cada parámetro.
+                        tk.Label(self.fr_trans_3,text=i,
+                        bg="gray75").grid(row=count,column=0)
+                        tk.Entry(self.fr_trans_3).grid(row=count,column=1)
+                        count += 1
 
                 """AQUI HAY QUE AÑADIR ESPACIO PARA INSERTAR LOS PARÁMETROS
                 O USAR AUTOMÁTICAMENTE LOS QUE YA HUBIERA"""
@@ -854,15 +864,10 @@ class App(tk.Tk):
         # Frames para la Toplevel de transformación.
         self.fr_trans_1 = tk.Frame(self.top_trans,bg="gray75")
         self.fr_trans_2 = tk.Frame(self.top_trans,bg="gray75")
-        # Label para los Frames.
-        """self.lbl_trans_1 = tk.Label(self.fr_trans_1,textvariable=str_var,
-            bg="gray75")"""
+        self.fr_trans_3 = tk.Frame(self.top_trans,bg="gray75")
+        # Label para el Frames.
         self.lbl_trans_2 = tk.Label(self.fr_trans_2,
             text='Tipo de cálculo',bg="gray75")
-        # Combobox para seleccionar puntos.
-        """self.cmb_trans = ttk.Combobox(self.fr_trans_1,
-            values=[i for i in table_strings],
-            justify=tk.CENTER,state="readonly",width=40)"""
         # Radiobuttons para opciones de cálculo.
         self.radio_trans_param = tk.Radiobutton(self.fr_trans_2,
             text="Cálculo de parámetros",bg="gray75",
@@ -876,8 +881,10 @@ class App(tk.Tk):
         # Invoke hace que se active ese Radiobutton.
         self.radio_trans_param.invoke()
 
+        self.fr_trans_3.pack(side=tk.BOTTOM,fill=tk.BOTH)
         self.fr_trans_1.pack(side=tk.LEFT)
         self.fr_trans_2.pack(side=tk.RIGHT)
+
         """self.lbl_trans_1.pack()"""
         self.lbl_trans_2.pack()
         """self.cmb_trans.pack()"""
