@@ -288,7 +288,7 @@ class App(tk.Tk):
     def draw_table(self,master):
         # Label para la tabla de puntos.
         # Si esta etiqueta, el canvas se come a la tabla.
-        self.lbl_table=tk.Label(self.fr_table,text="Puntos",width=90,
+        self.lbl_table=tk.Label(master,text="Puntos",width=90,
             bg='gray38',fg="gray75")
         self.lbl_table.pack()
         # Creación de tabla para cargar los puntos.
@@ -774,6 +774,10 @@ class App(tk.Tk):
                     # Se borran elementos innecesarios del Frame.
                     for i in self.fr_trans_1.winfo_children():
                         i.destroy()
+                    for j in self.fr_trans_3.winfo_children():
+                        j.destroy()
+                    for k in self.fr_trans_4.winfo_children():
+                        k.destroy()
                 except:
                     pass
                 # Cuando está pulsado un radiobutton, se queda desactivado.
@@ -842,11 +846,49 @@ class App(tk.Tk):
                         tk.Entry(self.fr_trans_3).grid(row=count,column=1)
                         count += 1
 
+                # Label para encabezado de tabla.
+                self.lbl_trans_3 = tk.Label(self.fr_trans_4,
+                    text='Puntos a transformar')
+                self.lbl_trans_3.pack()
+                # Tabla para mostrar los puntos que se pueden seleccionar.
+                # Sólamente muestra los encabezados, NO EL ÍNDICE.
+                self.table_trans = ttk.Treeview(self.fr_trans_4,
+                    show="headings")
+                self.table_trans.pack(fill=tk.BOTH)
+
+                self.table_trans["columns"] = ("0", "1", "2", "3", "4")
+                self.table_trans.column("0",width=50,minwidth=40,
+                    stretch=tk.NO,anchor=tk.CENTER)
+                self.table_trans.column("1",width=100,minwidth=50,
+                    stretch=tk.NO,anchor=tk.CENTER)
+                self.table_trans.column("2",width=100,minwidth=50,
+                    stretch=tk.NO,anchor=tk.CENTER)
+                self.table_trans.column("3",width=90,minwidth=50,
+                    stretch=tk.NO,anchor=tk.CENTER)
+                self.table_trans.column("4",width=110,minwidth=50,
+                    stretch=tk.NO,anchor=tk.CENTER)
+
+                self.table_trans.heading("0", text="Número")
+                self.table_trans.heading("1", text="X")
+                self.table_trans.heading("2", text="Y")
+                self.table_trans.heading("3", text="Z")
+                self.table_trans.heading("4", text="Código")
+                # Inserción de seleccion de puntos de tabla original en la
+                # Tabla de puntos a transformar.
+                for item in table_points:
+                    self.table_trans.insert('','end',values=(item.num,
+                    item.coord[0],item.coord[1],item.coord[2],item.cod))
+                # Botón para el cálculo de la transformación.
+                tk.Button(self.fr_trans_4,text='Calcular',command='').pack()
+                """FALTA POR HACER LA FUNCIÓN QUE HAY QUE PASAR AL BOTÓN."""
+                """HAY UN fr_trans_4 PARA PODER UTILIZAR PARA MOSTAR LOS
+                PUNTOS A TRANSFORMAR"""
+
                 """AQUI HAY QUE AÑADIR ESPACIO PARA INSERTAR LOS PARÁMETROS
                 O USAR AUTOMÁTICAMENTE LOS QUE YA HUBIERA"""
 
         # En caso de tener abierto algún archivo, se abre una Toplevel.
-        if self.table.selection() :
+        if self.table.selection():
             self.top_trans = tk.Toplevel(self)
             #self.top_trans.geometry("%dx%d" % (300,85))
             self.top_trans.configure(background="gray75")
@@ -865,6 +907,7 @@ class App(tk.Tk):
         self.fr_trans_1 = tk.Frame(self.top_trans,bg="gray75")
         self.fr_trans_2 = tk.Frame(self.top_trans,bg="gray75")
         self.fr_trans_3 = tk.Frame(self.top_trans,bg="gray75")
+        self.fr_trans_4 = tk.Frame(self.top_trans,bg="gray75")
         # Label para el Frames.
         self.lbl_trans_2 = tk.Label(self.fr_trans_2,
             text='Tipo de cálculo',bg="gray75")
@@ -877,10 +920,11 @@ class App(tk.Tk):
             variable=var_trans,value=2,command=handler_radio)
         """LA VARIABLE SE TIENE QUE CONFIGURAR AL CAMBIAR EL Combobox
         Y EL RADIOBUTTON"""
-
         # Invoke hace que se active ese Radiobutton.
         self.radio_trans_param.invoke()
-
+        # Frames para configurar los espacios de la Toplevel de transformación.
+        self.fr_trans_4.pack(side=tk.BOTTOM,fill=tk.BOTH,
+            expand=True,ipadx=5,ipady=5)
         self.fr_trans_3.pack(side=tk.BOTTOM,fill=tk.BOTH)
         self.fr_trans_1.pack(side=tk.LEFT)
         self.fr_trans_2.pack(side=tk.RIGHT)
