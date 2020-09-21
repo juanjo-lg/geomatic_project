@@ -222,7 +222,7 @@ class H2D():
         # Matriz de rotación en el eje Z.
         mat_rot = np.matrix(([np.cos(self.ang), -(np.sin(self.ang))],
                               [np.sin(self.ang), np.cos(self.ang)]))
-        print("a: ",mat_rot)
+        # print("a: ",mat_rot)
         mat_point = np.matrix(([self.x],[self.y]))
         new_point = mat_tras + mu * mat_rot * mat_point
         print(new_point)

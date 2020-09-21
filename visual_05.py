@@ -718,6 +718,20 @@ class App(tk.Tk):
         self.param = None   # Se crea la variable parámetros de transformación.
         #var_trans.set(1)
 
+        """HASTA AQUÍ LLEGO, HAY QUE PASAR LA FUNCIÓN AL BOTÓN DE CALCULAR."""
+        def calc_h2d(event=None):
+            # Función para el cálculo de la transformación con los parámetros.
+            # Se pasan los parámetros como tuple y la lista  con los puntos.
+            table_items = self.table_trans.selection()
+            for point in table_items:
+                # Hay que hacerlo string para poder usar "translate".
+                point_data = str(self.table_trans.item(point,option="values"))
+                point_data = point_data.translate({ord(i):None for i in "'()"})
+                print(point_data)
+
+            """for point in points:
+                be.H2D(point.x,point.y,param[0],param[1],param[2],param[3])"""
+
         def handler_cmb_trans(event=None):
             # Manejador para el evento de cambio de valor del Combobox.
             # Posición en el Combobox para manejar el listado de puntos.
@@ -765,9 +779,11 @@ class App(tk.Tk):
                 pass
 
         def handler_radio(event=None):
+            # Manejador para el evento de cambio de valor del Radiobutton.
             """SOLAMENTE DEJA HACER LA OPERACION DE CALCULAR LOS PARÁMETROS
             SI ANTES NO SE CAMBIA EL RADIOBUTTON"""
-            # Manejador para el evento de cambio de valor del Radiobutton.
+
+
             if var_trans.get() == 1 and len(table_items) >= 6:
                 # Si existe lbl_trans_1, se destruye.
                 try:
@@ -879,7 +895,8 @@ class App(tk.Tk):
                     self.table_trans.insert('','end',values=(item.num,
                     item.coord[0],item.coord[1],item.coord[2],item.cod))
                 # Botón para el cálculo de la transformación.
-                tk.Button(self.fr_trans_4,text='Calcular',command='').pack()
+                tk.Button(self.fr_trans_4,text='Calcular',
+                    command=calc_h2d).pack()
                 """FALTA POR HACER LA FUNCIÓN QUE HAY QUE PASAR AL BOTÓN."""
                 """HAY UN fr_trans_4 PARA PODER UTILIZAR PARA MOSTAR LOS
                 PUNTOS A TRANSFORMAR"""
