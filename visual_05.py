@@ -718,18 +718,22 @@ class App(tk.Tk):
         self.param = None   # Se crea la variable parámetros de transformación.
         #var_trans.set(1)
 
-        """HASTA AQUÍ LLEGO, HAY QUE PASAR LA FUNCIÓN AL BOTÓN DE CALCULAR."""
+        """NO HACE BIEN EL CÁLCULO, HAY QUE REVISARLO."""
         def calc_h2d(event=None):
             # Función para el cálculo de la transformación con los parámetros.
             # Se pasan los parámetros como tuple y la lista  con los puntos.
             table_items = self.table_trans.selection()
             for point in table_items:
-                # Hay que hacerlo string para poder usar "translate".
+                # Point data
+                pd = self.table_trans.item(point,option="values")
+                trans_point = be.H2D(float(pd[1]),float(pd[2]),self.param[5],
+                    self.param[2],self.param[3],self.param[4])
+                """# Hay que hacerlo string para poder usar "translate".
                 point_data = str(self.table_trans.item(point,option="values"))
                 point_data = point_data.translate({ord(i):None for i in "'()"})
-                print(point_data)
+                print(point_data)"""
 
-            """for point in points:
+                """for point in points:
                 be.H2D(point.x,point.y,param[0],param[1],param[2],param[3])"""
 
         def handler_cmb_trans(event=None):
