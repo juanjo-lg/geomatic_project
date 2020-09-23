@@ -189,10 +189,11 @@ class Param2D():
         # Cálculo de Tx y Ty.
         # Tx = (SUM(X)-SUM(ax)+SUM(by))/n; Ty = (SUM(Y)-SUM(bx)-SUM(ay))/n
         # Listas por array para poder multiplicar los elementos por un número.
-        tx = (np.sum(lst_x_pb)-np.sum(a*np.array(lst_x_pt))
-            +np.sum(b*np.array(lst_y_pt)))/len(lst_x_pb)
-        ty = (np.sum(lst_y_pb)-np.sum(b*np.array(lst_x_pt))
-            -np.sum(a*np.array(lst_y_pt)))/len(lst_y_pb)
+        """ARREGLADO DESPUÉS DE TENER FALLO ENTRE PUNTOS BASE Y PUNTOS TARGET"""
+        tx = (np.sum(lst_x_pt)-np.sum(a*np.array(lst_x_pb))
+            +np.sum(b*np.array(lst_y_pb)))/len(lst_x_pb)
+        ty = (np.sum(lst_y_pt)-np.sum(b*np.array(lst_x_pb))
+            -np.sum(a*np.array(lst_y_pb)))/len(lst_y_pb)
         # Cálculo del ángulo de giro. tg(alpha) = b/a
         # Cálculo de la escala. mu = b/sen(alpha)
         alpha = np.arctan2(b,a)*200/np.pi
@@ -225,7 +226,7 @@ class H2D():
         # print("a: ",mat_rot)
         mat_point = np.matrix(([self.x],[self.y]))
         new_point = mat_tras + mu * mat_rot * mat_point
-        print(new_point)
+        return new_point
 
 #Clase Nivelación.
 class Levelling:
@@ -236,32 +237,3 @@ class Levelling:
 class Polygonal:
     def __init__(self):
         pass
-
-"""Pruebas"""
-"""print("-------------------------")
-print("PRUEBAS DE FUNCIONAMIENTO")
-print("-------------------------")
-inicio = time.time()"""
-"""p1 = Point(-1, 1, 0, cod = "Arbol")
-p2 = Point(1, 1, 0)
-p3 = Point(2, 2, 2)"""
-"""print("Dinstancia entre dos puntos con el método del punto: %s" %
-    (p1.distance(p2.coord)))
-print("Dinstancia entre dos puntos con np.linalg: %s" %
-    (np.linalg.norm(p1.coord-p2.coord)))
-print("azimut del punto 1: %s" % (p1.azimut([-2,2,0])))
-print(p1.cod)
-print(p2.coord[1])"""
-"""azim_p1_p2 = Azimut(p1,p2)
-print(azim_p1_p2.azim)"""
-"""ang_1 = Angle(540, ang_mes="deg")
-print(ang_1.angle)
-print(ang_1.ang_mes)
-p1.set_coord("x", 100)
-p1.get_coord("y")
-fin = time.time()
-dif_time = fin - inicio
-print(dif_time)"""
-
-"""azimut = Azimut(p1,p2)
-print(azimut.grad_2_deg())"""

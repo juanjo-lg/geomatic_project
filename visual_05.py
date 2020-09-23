@@ -266,7 +266,6 @@ class App(tk.Tk):
         self.ax.set_aspect('equal',adjustable='datalim')
         self.ax.set_xlabel('Coordenadas X')
         self.ax.set_ylabel('Coordenadas Y')
-        """HAY QUE DAR UNA VUELTA AL TICKLABEL_FORMAT PARA QUE NO HAYA EXPONENCIAL"""
         self.ax.ticklabel_format(style='plain', axis='both')
         """Quito las coordenadas para que no me reescalen la figura."""
         # Formato de coordenadas mostrado en los ejes 'X' e 'Y'.
@@ -706,7 +705,6 @@ class App(tk.Tk):
         # Evento que devuelve los datos del Combobox cada vez que se cambia.
         self.cmb_dist_azim.bind("<<ComboboxSelected>>", handler_cmb_dist_azim)
     def transformation(self, event=None):
-        """HAY QUE SEGUIR CON ESTO"""
         # Función de transformación de puntos.
         table_points = []
         table_strings = []
@@ -718,7 +716,6 @@ class App(tk.Tk):
         self.param = None   # Se crea la variable parámetros de transformación.
         #var_trans.set(1)
 
-        """EL CÁLCULO ESTÁ BIEN, HAY QUE REVISAR LOS PARÁMETROS."""
         def calc_h2d(event=None):
             # Función para el cálculo de la transformación con los parámetros.
             # Se pasan los parámetros como tuple y la lista  con los puntos.
@@ -736,18 +733,11 @@ class App(tk.Tk):
                 pd = self.table_trans.item(point,option="values")
                 trans_point = be.H2D(float(pd[1]),float(pd[2]),self.param[0],
                     self.param[1],self.param[2],self.param[3])
-                """# Hay que hacerlo string para poder usar "translate".
-                point_data = str(self.table_trans.item(point,option="values"))
-                point_data = point_data.translate({ord(i):None for i in "'()"})
-                print(point_data)"""
-
-                """for point in points:
-                be.H2D(point.x,point.y,param[0],param[1],param[2],param[3])"""
+                self.text.insert('',tk.END,trans_point)
 
         def handler_cmb_trans(event=None):
             # Manejador para el evento de cambio de valor del Combobox.
             # Posición en el Combobox para manejar el listado de puntos.
-            """HAY QUE SEGUIR!!!!!"""
             # Caso de cálculo de parámetros.
             # Points_base => Puntos en sistema de partida.
             # Points_target => Puntos en el sistema a convertir.
@@ -765,7 +755,6 @@ class App(tk.Tk):
                             tk.Label(self.fr_trans_1,
                                 text='%s --> %s' % (points_base[i],
                                 points_target[i])).pack()
-                        """FUNCIONA!!!!"""
                         # Cálculo de parámetros con basic_elements.
                         self.param = be.Param2D(points_base,points_target,int(
                             self.spin_param.get())).calc_param()
@@ -909,12 +898,6 @@ class App(tk.Tk):
                 # Botón para el cálculo de la transformación.
                 tk.Button(self.fr_trans_4,text='Calcular',
                     command=calc_h2d).pack()
-                """FALTA POR HACER LA FUNCIÓN QUE HAY QUE PASAR AL BOTÓN."""
-                """HAY UN fr_trans_4 PARA PODER UTILIZAR PARA MOSTAR LOS
-                PUNTOS A TRANSFORMAR"""
-
-                """AQUI HAY QUE AÑADIR ESPACIO PARA INSERTAR LOS PARÁMETROS
-                O USAR AUTOMÁTICAMENTE LOS QUE YA HUBIERA"""
 
         # En caso de tener abierto algún archivo, se abre una Toplevel.
         if self.table.selection():
