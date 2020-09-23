@@ -718,16 +718,24 @@ class App(tk.Tk):
         self.param = None   # Se crea la variable parámetros de transformación.
         #var_trans.set(1)
 
-        """NO HACE BIEN EL CÁLCULO, HAY QUE REVISARLO."""
+        """EL CÁLCULO ESTÁ BIEN, HAY QUE REVISAR LOS PARÁMETROS."""
         def calc_h2d(event=None):
             # Función para el cálculo de la transformación con los parámetros.
             # Se pasan los parámetros como tuple y la lista  con los puntos.
+            # Si no existen parámetros previos, se obtienen de los entries.
+            if not self.param:
+                params = []
+                for i in self.fr_trans_3.winfo_children():
+                    if type(i) == tk.Entry:
+                        params.append(float(i.get()))
+            self.param = params
+
             table_items = self.table_trans.selection()
             for point in table_items:
                 # Point data
                 pd = self.table_trans.item(point,option="values")
-                trans_point = be.H2D(float(pd[1]),float(pd[2]),self.param[5],
-                    self.param[2],self.param[3],self.param[4])
+                trans_point = be.H2D(float(pd[1]),float(pd[2]),self.param[0],
+                    self.param[1],self.param[2],self.param[3])
                 """# Hay que hacerlo string para poder usar "translate".
                 point_data = str(self.table_trans.item(point,option="values"))
                 point_data = point_data.translate({ord(i):None for i in "'()"})
@@ -762,8 +770,8 @@ class App(tk.Tk):
                         self.param = be.Param2D(points_base,points_target,int(
                             self.spin_param.get())).calc_param()
                         self.param_txt = "Parámetros de transformación:\n\n"\
-                            "a: %.15f\nb: %.15f\nTx: %.15f\n"\
-                            "Ty: %.15f\nAlpha: %.15f\nmu: %.4f\n" % (
+                            "Tx: %.15f\nTy: %.15f\nAlpha: %.15f\n"\
+                            "mu: %.15f\na: %.15f\nb: %.4f\n" % (
                             self.param[0],self.param[1],self.param[2],
                             self.param[3],self.param[4],self.param[5])
                         self.text.insert(tk.END,self.param_txt)

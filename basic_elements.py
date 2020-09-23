@@ -199,7 +199,7 @@ class Param2D():
         mu = b/np.sin(alpha*np.pi/200)
         # Escritura de los distintos parámetros en un fichero ".txt"
         # os.linesep es lo mismo que "\n"
-        return a,b,tx,ty,alpha,mu
+        return tx,ty,alpha,mu,a,b
         """print("Parámetros de transformación para sistema Helmert 2D."+os.linesep)
         print("a: %.15f\n" % a)
         print("b: %.15f\n" % b)
@@ -210,7 +210,7 @@ class Param2D():
 
 # Clase Transformación Helmert2D
 class H2D():
-    def __init__(self, x, y, mu, tx, ty, ang):
+    def __init__(self, x, y, tx, ty, ang, mu):
         self.x = x
         self.y = y
         self.mu = mu
