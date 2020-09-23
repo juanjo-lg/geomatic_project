@@ -725,7 +725,7 @@ class App(tk.Tk):
                 for i in self.fr_trans_3.winfo_children():
                     if type(i) == tk.Entry:
                         params.append(float(i.get()))
-            self.param = params
+                self.param = params
 
             table_items = self.table_trans.selection()
             for point in table_items:
