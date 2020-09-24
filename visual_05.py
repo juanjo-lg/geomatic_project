@@ -717,6 +717,7 @@ class App(tk.Tk):
         #var_trans.set(1)
 
         def calc_h2d(event=None):
+            """FUNCIONA"""
             # Función para el cálculo de la transformación con los parámetros.
             # Se pasan los parámetros como tuple y la lista  con los puntos.
             # Si no existen parámetros previos, se obtienen de los entries.
@@ -731,9 +732,13 @@ class App(tk.Tk):
             for point in table_items:
                 # Point data
                 pd = self.table_trans.item(point,option="values")
+                # Cálculo de la transformación.
                 trans_point = be.H2D(float(pd[1]),float(pd[2]),self.param[0],
                     self.param[1],self.param[2],self.param[3])
-                self.text.insert('',tk.END,trans_point)
+                # Paso de coordenadas a formato string.
+                trans_point_txt = str(trans_point.calc())
+                # Inserción de coordenadas en el cuadro de texto.
+                self.text.insert(tk.END,trans_point_txt+"\n")
 
         def handler_cmb_trans(event=None):
             # Manejador para el evento de cambio de valor del Combobox.

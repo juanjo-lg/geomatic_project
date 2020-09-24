@@ -218,6 +218,8 @@ class H2D():
         self.tx = tx
         self.ty = ty
         self.ang = ang * np.pi / 200  # Paso de ángulo a radianes.
+    def calc(self):
+        # Método de cálculo de puntos.
         # Matriz de traslación.
         mat_tras = np.matrix(([self.tx],[self.ty]))
         # Matriz de rotación en el eje Z.
@@ -225,7 +227,7 @@ class H2D():
                               [np.sin(self.ang), np.cos(self.ang)]))
         # print("a: ",mat_rot)
         mat_point = np.matrix(([self.x],[self.y]))
-        new_point = mat_tras + mu * mat_rot * mat_point
+        new_point = mat_tras + self.mu * mat_rot * mat_point
         return new_point
 
 #Clase Nivelación.
