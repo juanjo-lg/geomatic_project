@@ -230,12 +230,46 @@ class H2D():
         new_point = mat_tras + self.mu * mat_rot * mat_point
         return new_point
 
-#Clase Nivelación.
+# Clase Nivelación.
 class Levelling:
     def __init__(self):
         pass
 
-#Clase Poligonal.
+# Clase visual a un punto.
+class Visual(Angle):
+    def __init__(self, angle, dist, pb, pt):
+        # Se pasan como parámetros ángulo y distancia reducida medidos junto
+        # con los puntos base y medido.
+        Angle.__init__(self, angle, ang_mes = "grad")
+        self.pb = pb
+        self.pt = pt
+        self.angle = angle
+        self.dist = dist
+    def __str__(self):
+        return 'Ángulo medido: {}g\nDistancia reducida medida: {}m\n'\
+            .format(self.angle,self.dist)
+
+# Clase Intersección inversa.
+class Intersection:
+    def __init__(self, visuals):
+        # Se pasa como argumento una lista con las visuales.
+        pass
+
+# Clase Poligonal.
 class Polygonal:
     def __init__(self):
         pass
+
+"""PRUEBAS DE LA CLASE Intersección."""
+def main():
+
+    base = Point(0,0,0)
+    p1 = Point(353480.991,4610711.268)
+    p2 = Point(353503.244,4610736.699)
+    p3 = Point(353550.362,4610769.152)
+    p4 = Point(353576.825,4610725.265)
+    a = Visual(152.0065,55.231,base,p1)
+    print(a)
+
+if __name__ == '__main__':
+    main()
