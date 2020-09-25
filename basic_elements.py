@@ -268,8 +268,11 @@ def main():
     p2 = Point(353503.244,4610736.699)
     p3 = Point(353550.362,4610769.152)
     p4 = Point(353576.825,4610725.265)
-    a = Visual(152.0065,55.231,base,p1)
-    print(a)
+    v1 = Visual(155.6401,55.231,base,p1)
+    v2 = Visual(191.3584,60,base,p2)
+    v3 = Visual(282.1935,53.542,base,p4)
+    v4 = Visual(240.5036,82,base,p3)
+    print(v1)
 
 if __name__ == '__main__':
     main()
