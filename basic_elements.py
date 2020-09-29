@@ -120,9 +120,9 @@ class Zenith(Angle):
         self.zenith = angle
 
 #Clase Base.
-class Base(Point, Azimut, Zenith):
-    def __init__(self, coord, azim):
-        pass
+class Base(Point):
+    def __init__(self, x, y, z=0, **kwargs):
+        Point.__init__(self, x, y, z=0, **kwargs)
 
 # Clase transformación Helmert 2D.
 class Param2D():
@@ -244,7 +244,7 @@ class Visual(Angle):
         self.pb = pb
         self.pt = pt
         self.angle = angle
-        self.dist = dist
+        self.dist = dist    # Distancia reducida.
     def __str__(self):
         return 'Ángulo medido: {}g\nDistancia reducida medida: {}m\n'\
             .format(self.angle,self.dist)
@@ -260,18 +260,24 @@ class Polygonal:
     def __init__(self):
         pass
 
-"""PRUEBAS DE LA CLASE Intersección."""
+"""PRUEBAS DE LA CLASE Intersección. Hay un croquis en CAD."""
 def main():
 
     base = Point(0,0,0)
-    p1 = Point(353480.991,4610711.268)
-    p2 = Point(353503.244,4610736.699)
-    p3 = Point(353550.362,4610769.152)
-    p4 = Point(353576.825,4610725.265)
-    v1 = Visual(155.6401,55.231,base,p1)
-    v2 = Visual(191.3584,60,base,p2)
-    v3 = Visual(282.1935,53.542,base,p4)
-    v4 = Visual(240.5036,82,base,p3)
+    p1 = Point(1819.316,1424.302)
+    p2 = Point(1800.715,1485.789)
+    p3 = Point(1832.361,1491.844)
+    p4 = Point(1868.384,1470.987)
+    p5 = Point(1903.061,1440.375)
+    p6 = Point(1936.112,1344.004)
+    p7 = Point(1827.829,1365.099)
+    v1 = Visual(25.1437,32.680,base,p1)
+    v2 = Visual(70.8388,85.132,base,p2)
+    v3 = Visual(95.4981,76.96,base,p3)
+    v4 = Visual(130.9343,56.429,base,p4)
+    v5 = Visual(184.5289,56.770)
+    v6 = Visual(256.5733,112.110)
+    v7 = Visual(338.1118,57.141)
     print(v1)
 
 if __name__ == '__main__':
